@@ -4,6 +4,12 @@ Download v10 muon files from following path:
 /afs/cern.ch/work/s/spandey/public/hgcal/samples/v10/muon_v10.root
 
 
+cmsrel CMSSW_8_0_1
+cd CMSSW_8_0_1/src
+cmsenv
+git clone git@github.com:spandeyehep/HGCAL_analysis_code.git
+cd HGCAL_analysis_code/MIP_fitter/
+
 > update the file path in the mipFitterTree.C
 
 > To run the fit on a single channel:
