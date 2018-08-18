@@ -26,6 +26,7 @@ public :
    void    Init(TTree *tree, TTree *tree2);
    Bool_t  Notify();
    Int_t   GetEntry(Long64_t entry, Int_t getall = 0) { return fChain ? fChain->GetTree()->GetEntry(entry, getall) : 0; }
+   int getBIN(unsigned int skiroc,unsigned int channel);
 
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    TTree          *fChain2;   //!pointer to the analyzed TTree or TChain

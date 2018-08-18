@@ -22,8 +22,8 @@ class AnalyzeHGCMuons : public HGCNtupleVariables{
   void     BookHistogram(const char *);
   
   TFile *oFile;
-  TDirectory *d_Layer1;
-  TH1F *h_ADChg[128];
+  TDirectory *d_Layer[28];
+  TH1F *h_ADChg[28][128];
 };
 #endif
 
@@ -34,15 +34,27 @@ void AnalyzeHGCMuons::BookHistogram(const char *outFileName) {
 //  char hname[200], htit[200];
 //  double xlow = 0.0,  xhigh = 2000.0;
 //  int nbins = 2000;
-
+  char* hname = new char[200];
+  char* dir_name = new char[200];
   oFile = new TFile(outFileName, "recreate");
-  d_Layer1 = oFile->mkdir("Layer1");
-  char hname[200];
-  d_Layer1-> cd();
-  for(int ii=0; ii<128; ii++) {
-    sprintf(hname, "ADC_HG_%d", ii+1);
-    h_ADChg[ii] = new TH1F(hname, hname, 100, 0, 400);
+
+
+  for(int i_layer = 0; i_layer < 28; i_layer++) {
+    int n = 0;
+    sprintf(dir_name,"Layer_%d",i_layer);
+    d_Layer[i_layer] = oFile->mkdir(dir_name);
+
+    d_Layer[i_layer]-> cd();
+  
+    for(int i = 0; i < 4; i++) {
+      for(int j = 0; j < 64; j+=2,n++) {
+	sprintf(hname,"%d_%d_%d",i_layer,i,j);
+	h_ADChg[i_layer][n] = new TH1F(hname,hname,200,0,400);
+	//cout<<hname<<endl;
+      }
+    }
   }
+  
 }
 
 
