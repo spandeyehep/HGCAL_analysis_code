@@ -16,10 +16,9 @@ cd HGCAL_analysis_code/MIP_fitter/
 
 root -l
 .L mipFitterTree.C+
-Loop(0,0,0)
+runOneCell(0,0,0)
 
-
-### Loop(unsigned int layer,unsigned int skiroc,unsigned int channel)
+### runOneCell(unsigned int layer,unsigned int skiroc,unsigned int channel)
 layer : 0 to 27
 skiroc : 0 to 3
 channel : 0 to 62
@@ -28,10 +27,10 @@ channel : 0 to 62
 > To run on one skiroc chip:
 root -l
 .L mipFitterTree.C+
-runAllChannel(0, 0)
+runOneChip(0, 0)
 
 
-### runAllChannel(unsigned int layer,unsigned int skiroc)
+### runOneChip(unsigned int layer,unsigned int skiroc)
 layer : 0 to 27
 skiroc : 0 to 3
 
@@ -39,15 +38,16 @@ skiroc : 0 to 3
 > To run on one layer:
 root -l
 .L mipFitterTree.C+
-runAllSkiROC(0)
+runAllChip(0)
 
 
-### runAllSkiROC(unsigned int layer)
+### runAllChip(unsigned int layer)
 layer : 0 to 27
 
 
 
 > To run on ENTIRE layers:
+>IMPORTANT: in order to suppress drawing of plots, run ROOT in batch mode by using "root -l -b" command
 root -l
 .L mipFitterTree.C+
 runAllLayers(0,27)
