@@ -31,82 +31,24 @@
 using namespace RooFit;
 
 ofstream myfile;
-TFile* _file0 = TFile::Open("/home/work/spandey/public/MIP_calibration/samples/v10/muon_v10.root");
+TFile* _file0 = TFile::Open("/home/work/spandey/public/MIP_calibration/CMSSW_8_0_1/src/Code_skeleton/temp.root");
 
 void Loop(unsigned int layer,unsigned int skiroc,unsigned int channel)
 {
-  //if (fChain == 0) return;
+  
+  const int max_ = 400.0;
+  const int tf1_min = 20.0;
+  const int tf1_max = 60.0;
+  bool print_draw = true;
+  int bin_ = max_/2;
+  std::ostringstream os(std::ostringstream::ate);
+  os.str("");
+  os<<"Board="<<layer<<" Chip="<<skiroc<<" Channel="<<channel;
 
-  //TFile* _file0 = TFile::Open("/home/work/spandey/public/MIP_calibration/samples/v10/132_162/muon_132_162_v10.root");
-
-  TTree* tree = (TTree*)_file0->Get("rechitntupler/hits");
-
-
-  vector<float> *rechit_amplitudeHigh_ = nullptr;
-  vector<unsigned int> *rechit_layer_ = nullptr;
-  vector<unsigned int> *rechit_chip_ = nullptr;
-  vector<unsigned int> *rechit_channel_ = nullptr;
-
-
-  TBranch* b_rechit_amplitudeHigh;
-  TBranch* b_rechit_layer;
-  TBranch* b_rechit_chip;
-  TBranch* b_rechit_channel;
-
-  tree->SetMakeClass(1);
-
-  tree->SetBranchAddress("rechit_amplitudeHigh", &rechit_amplitudeHigh_, &b_rechit_amplitudeHigh);
-  tree->SetBranchAddress("rechit_layer", &rechit_layer_, &b_rechit_layer);
-  tree->SetBranchAddress("rechit_chip", &rechit_chip_, &b_rechit_chip);
-  tree->SetBranchAddress("rechit_channel", &rechit_channel_, &b_rechit_channel);
-
-
-  // for( unsigned entry = 0; entry < std::min((unsigned)50000000,(unsigned)(tree->GetEntriesFast()) ); entry++){
-  // }
-  Long64_t nentries = (Long64_t)(tree->GetEntriesFast());
-
-   cout<<nentries<<endl;
-   // tree->GetEntry(0);
-   cout<<"YOLO"<<endl;
-
-   const int max_ = 400.0;
-   const int tf1_min = 20.0;
-   const int tf1_max = 60.0;
-   bool print_draw = true;
-   int bin_ = max_/2;
-   std::ostringstream os(std::ostringstream::ate);
-   os.str("");
-   os<<"Board="<<layer<<" Chip="<<skiroc<<" Channel="<<channel;
-   //TH1F* h=new TH1F(os.str().c_str(),os.str().c_str(),bin_,0,max_);
-   TH1F* h=new TH1F(os.str().c_str(),os.str().c_str(),bin_,0,max_);
-   
-
-   //Long64_t nbytes = 0, nb = 0;
-   cout<<nentries<<endl;
-   // tree->GetEntry(0);
-   
-   for (Long64_t jentry=0; jentry<nentries;jentry++) {
-     //Long64_t ientry = LoadTree(jentry);
-     tree->GetEntry(jentry);
-     // if (ientry < 0) break;
-     // nb = fChain->GetEntry(jentry);   nbytes += nb;
-     // if (Cut(ientry) < 0) continue;
-     //if( boardID==layer && skirocID==skiroc && channelID==channel && HighGainADC<200 && HighGainADC>20){
-     //if( boardID==layer && skirocID==skiroc && channelID==channel && HighGainADC<max_ && HighGainADC>20){
-     
-     // cout<<"ADC:layer:chip:channel"<<endl
-     // 	 <<rechit_amplitudeHigh_->size()<<":"
-     // 	 <<rechit_layer_->size()<<":"
-     // 	 <<rechit_chip_->size()<<":"
-     // 	 <<rechit_channel_->size()<<endl;
-     // h->Fill(1);
-     for(unsigned int i = 0; i < rechit_layer_->size(); i++) {
-       //if( boardID==layer && skirocID==skiroc && channelID==channel)   h->Fill(HighGainADC);
-       if( layer==(rechit_layer_->at(i)-1) && skiroc==(rechit_chip_->at(i)) && channel==(rechit_channel_->at(i)))
-	 h->Fill(rechit_amplitudeHigh_->at(i));
-     }
-   }
-   
+  char* hname = new char[50];
+  sprintf(hname,"Layer_%d/%d_%d_%d",layer,layer,skiroc,channel);
+  cout<<"Taking histogram -> "<<hname<<endl;
+  TH1F* h = (TH1F*)_file0->Get(hname);
    // h->Draw();
    // getchar();
    
@@ -148,7 +90,7 @@ void Loop(unsigned int layer,unsigned int skiroc,unsigned int channel)
    // RooRealVar nbkg("nbkg","nbkg",1e1,0.,1.e6);
    // RooRealVar nnoise("nnoise","nbkg",1e1,0.,1.e6);
 
-   RooRealVar n1mip("n1mip","n1mip",1e1,0.,1.e6) ;
+   RooRealVar n1mip("n1mip","n1mip",1e3,0.,1.e6) ;
    RooRealVar n2mip("n2mip","n2mip",1e1,0.,1.e6);
    RooRealVar nbkg("nbkg","nbkg",1e1,0.,1.e6);
    RooRealVar nnoise("nnoise","nbkg",1e1,0.,1.e6);
@@ -227,35 +169,38 @@ void Loop(unsigned int layer,unsigned int skiroc,unsigned int channel)
    float chi2_ndf = xframe->chiSquare();
    int en_chan = (skiroc*1000+channel);
    float mpv_val = ml0.getValV();
-   char *line = new char[50];
+   char *line = new char[500];
    sprintf(line,"%d %d %d %d %.2f %.2f %.4f %.4f %.2f\n",layer,skiroc,channel,en_chan,ADC_MIP,chi2_ndf,const_val,err,mpv_val);
    cout<<line<<endl;
    myfile << line;
-   tree->Delete();
+
 }
 
 
-void runAllChannel(unsigned int layer,unsigned int skiroc)
+void runOneCell(unsigned int layer,unsigned int skiroc,unsigned int channel)
 {
-  // mipFitterTree m;
-  // char *f_name = new char[30];
-  // sprintf(f_name,"calib_file_skiroc_%d.txt",skiroc);
-  // myfile.open (f_name);
 
-  for(int i=0; i<32; i++){
-    Loop(layer,skiroc,2*i);
-  }
-  //myfile.close();
+    Loop(layer,skiroc,channel);
+
 }
 
 
-void runAllSkiROC(unsigned int layer)
+void runOneChip(unsigned int layer,unsigned int skiroc)
+{
+
+  for(unsigned int i = 0; i < 64; i+=2)
+    Loop(layer,skiroc,i);
+
+}
+
+
+void runAllChip(unsigned int layer)
 {
    char *f_name = new char[30];
    sprintf(f_name,"calib_file_layer_%d.txt",layer);
    myfile.open (f_name);
    for(int i=0; i<4; i++){
-     runAllChannel(layer,i);
+     runOneChip(layer,i);
    }
    myfile.close();
 }
@@ -263,8 +208,8 @@ void runAllSkiROC(unsigned int layer)
 
 void runAllLayers(unsigned int layer_start, unsigned int layer_end)
 {
-  for(unsigned int i=(layer_start); i<=layer_end; i++) {
-     runAllSkiROC(i);
+  for(unsigned int i=(layer_start-1); i<layer_end; i++) {
+     runAllChip(i);
    }
 
 }
