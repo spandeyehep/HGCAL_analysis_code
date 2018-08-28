@@ -147,6 +147,8 @@ void AnalyzeHGCMuons::EventLoop(const char *data) {
     for(int i = 0; i<28; i++) dr_[i].clear();
 
 
+
+
     if(print_) cout<<"*** N E W   E V E N T ***"<<endl;
     if(print_) cout<<"track_x = "<< track_x <<" ,track_y = "<< track_y 
 		   <<" ,track_chi2_X= "<<trackChi2_X<<" ,track_chi2_Y= "<<trackChi2_Y<<endl;
@@ -208,23 +210,55 @@ void AnalyzeHGCMuons::EventLoop(const char *data) {
       // }
       float dx = (rechit_x->at(i)-track_x[temp_layer]);
       float dy = (rechit_y->at(i)-track_y[temp_layer]);
+
+      std::pair<float, float> dxy_al = dxy_alignment(run,temp_layer+1);
+
+      float dx_corr = dxy_al.first;
+      float dy_corr = dxy_al.second;
+
+
+
       h_ADChg[temp_layer][getBIN(temp_chip,temp_channel)]->Fill(rechit_amplitudeHigh->at(i));
       h_rechitXY_layer[temp_layer]->Fill(rechit_x->at(i),rechit_y->at(i));
       h_trackX_rechitX_layer[temp_layer]->Fill(track_x[temp_layer],rechit_x->at(i));
       h_trackY_rechitY_layer[temp_layer]->Fill(track_y[temp_layer],rechit_y->at(i));
       h_dXY_layer[temp_layer]->Fill(dx,dy);
+      h_dx_run[getRunBin(run)][temp_layer]->Fill(dx);
+      h_dy_run[getRunBin(run)][temp_layer]->Fill(dy);
+
+      h_dx_corr_run[getRunBin(run)][temp_layer]->Fill(dx-dx_corr);
+      h_dy_corr_run[getRunBin(run)][temp_layer]->Fill(dy-dy_corr);
+
+
       if(run < 162) {
 	h_dX_run_132_161_layer[temp_layer]->Fill(run,dx);
 	h_dY_run_132_161_layer[temp_layer]->Fill(run,dy);
+
+	h_dX_corrected_run_132_161_layer[temp_layer]->Fill(run,dx-dx_corr);
+	h_dY_corrected_run_132_161_layer[temp_layer]->Fill(run,dy-dy_corr);
       }
       else if(run > 205 && run < 226) {
 	h_dX_run_206_225_layer[temp_layer]->Fill(run,dx);
 	h_dY_run_206_225_layer[temp_layer]->Fill(run,dy);
+
+	h_dX_corrected_run_206_225_layer[temp_layer]->Fill(run,dx-dx_corr);
+	h_dY_corrected_run_206_225_layer[temp_layer]->Fill(run,dy-dy_corr);
+
       }
       else {
 	h_dX_run_387_392_layer[temp_layer]->Fill(run,dx);
 	h_dY_run_387_392_layer[temp_layer]->Fill(run,dy);
+
+	h_dX_corrected_run_387_392_layer[temp_layer]->Fill(run,dx-dx_corr);
+	h_dY_corrected_run_387_392_layer[temp_layer]->Fill(run,dy-dy_corr);
+
+	// std::cout<<"(Run,Layer,dx,dy) = ("<<run<<","<<temp_layer+1<<","<<dx_corr<<","<<dy_corr<<")"<<std::endl;	
+	// std::cout<<"uncorrected (dx,dy), map(dx,dy) ,corrected (dx,dy) : ("
+	// 	 << run << "," <<temp_layer<<") , ("<<dx<<","<<dy<<") , ("<<dx_corr<<","<<dy_corr<<") , ("
+	// 	 <<dx-dx_corr<<","<<dy-dy_corr<<")"<<endl;
+
       }
+
 
     }
 

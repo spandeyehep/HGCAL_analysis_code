@@ -11,7 +11,7 @@
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
-
+#include <iostream>
 // Header file for the classes stored in the TTree if any.
 #include "vector"
 
@@ -27,8 +27,12 @@ public :
    Bool_t  Notify();
    Int_t   GetEntry(Long64_t entry, Int_t getall = 0) { return fChain ? fChain->GetTree()->GetEntry(entry, getall) : 0; }
    int getBIN(unsigned int skiroc,unsigned int channel);
+   int getRunBin(int run_);
    float deltaR(float x1, float y1, float x2, float y2);
    Float_t min(vector<Float_t> list_);
+   std::pair<float,float> dxy_alignment(int run, int layer);
+   std::map<std::pair<int,int>, std::pair<float,float> > align_map;
+
 
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    TTree          *fChain2;   //!pointer to the analyzed TTree or TChain
