@@ -4,11 +4,11 @@ CXXFLAGS= $(shell root-config --cflags)
 LIBS    = $(shell root-config --libs) 
 
 
-SOURCES = HGCNtupleVariables.cc AnalyzeHGCMuons.cc 
-HEADERS = HGCNtupleVariables.h AnalyzeHGCMuons.h 
+SOURCES = RecHit.cc KDTree.cc Cluster2D.cc HGCNtupleVariables.cc AnalyzeHGCOctTB.cc 
+HEADERS = RecHit.h Cluster2D.h KDTree.h HGCNtupleVariables.h AnalyzeHGCOctTB.h
 OBJECTS = $(SOURCES:.cc=.o)
 
-EXECUTABLE = analyzeHGCMuons
+EXECUTABLE = analyzeHGCOctTB
 
 all: $(SOURCES) $(EXECUTABLE)
 
@@ -33,5 +33,8 @@ clean:
 	rm -f $(OBJECTS) $(EXECUTABLE)
 
 ###
+RecHit.o: RecHit.h
+Cluster2D.o: Cluster2D.h
+KDTree.o: KDTree.h
 HGCNtupleVariables.o: HGCNtupleVariables.h
-AnalyzeHGCMuons.o:HGCNtupleVariables.h AnalyzeHGCMuons.h
+AnalyzeHGCOctTB.o: RecHit.h Cluster2D.h KDTree.h HGCNtupleVariables.h AnalyzeHGCOctTB.h
