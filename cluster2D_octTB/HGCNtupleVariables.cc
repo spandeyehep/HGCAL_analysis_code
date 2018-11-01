@@ -77,6 +77,7 @@ std::vector<RecHit*> HGCNtupleVariables::sort_rechits(std::vector<RecHit*> rechi
 
 std::vector<Cluster2D*> HGCNtupleVariables::ClusterProducer(std::vector<RecHit*> rechits_coll_) {
   //sort rechits according to cell_energy()
+  bool debug = false;
   rechits_coll_ = sort_rechits(rechits_coll_);
 
 
@@ -90,6 +91,11 @@ std::vector<Cluster2D*> HGCNtupleVariables::ClusterProducer(std::vector<RecHit*>
   /////////////////////////////
 
   for(int i = 0; i < (int)rechits_coll_.size(); i++) {
+    if(debug) {
+      cout<<"DEBUG: "<<i+1<<"\t "
+	  <<rechits_coll_.at(i)->getEnergy()<<"\t "
+	  <<rechits_coll_.at(i)->getDensity()<<"\t "<<rechits_coll_.at(i)->getDelta()<<endl;
+    }
     if((rechits_coll_.at(i)->getDensity() > 1.5) && (rechits_coll_.at(i)->getDelta() > 2.0)) {
       nSeeds_++;
       double x = -100.0, y = -100.0;
@@ -109,25 +115,26 @@ std::vector<Cluster2D*> HGCNtupleVariables::ClusterProducer(std::vector<RecHit*>
     }
   }
 
-  // std::cout<<"DEBUG: Number of Unique cluster = "<<cluster_coll_.size()<<endl;;
-  // std::cout<<"points size = "<<points.size()<<endl;
+
+  if(!cluster_coll_.size()) {
+    return std::vector<Cluster2D*>();
+  }
+
+  if(debug) {
+    std::cout<<"DEBUG: Number of Unique cluster seed = "<<cluster_coll_.size()<<endl;;
+    std::cout<<"points size = "<<points.size()<<endl;
+  }
   KDTree tree(points);
-  // std::cout<<"INFO: Iterating over all rechits to assign clusters!!"<<endl;
-  // cout<<"#\t x\t y\t Nearest index"<<endl;
+  if(debug) {
+    std::cout<<"INFO: Iterating over all rechits to assign clusters!!"<<endl;
+    cout<<"#\t x\t y\t Nearest index"<<endl;
+  }
 
   ////////////////////////////////////////
   // C L U S T E R     A S S I G N M E N T
   ///////////////////////////////////////
 
   for(int i = 0; i < (int)rechits_coll_.size(); i++) {
-    // std::vector<RecHit*> temp_rechit;
-    // temp_rechit.clear();
-    // Cluster2D* temp_cluster = new Cluster2D(temp_rechit);
-    // temp_cluster->setClusterRank(nSeeds_);
-    // temp_rechit.push_back(rechits_coll_.at(i));
-    // temp_cluster->setRechitCollection(temp_rechit);
-    // cluster_coll_.push_back(temp_cluster);
-    
     double x = -100.0, y = -100.0;
     x = rechits_coll_.at(i)->getCellCoordinate_xyz().at(0);
     y = rechits_coll_.at(i)->getCellCoordinate_xyz().at(1);
@@ -149,7 +156,8 @@ std::vector<Cluster2D*> HGCNtupleVariables::ClusterProducer(std::vector<RecHit*>
     }
     
     //cluster_coll_.push_back(temp_cluster);
-      
+
+    
     //cout<<i+1<<"\t "<<x<<"\t "<<y<<"\t "<<;
     // cout<<i+1<<"\t "<<x<<"\t "
     // 	<<y<<"\t "<<res.at(0)<<"\t "<<res.at(1)<<"\t "
@@ -181,10 +189,15 @@ std::vector<RecHit*> HGCNtupleVariables::makeCluster(std::vector<RecHit*> rechit
     for(int j = 0; j < (int)rechits_1.size(); j++) {
       RecHit* temp_rechit_j = rechits_1.at(j);
       float E_j = temp_rechit_j->getEnergy();
+      // float chi_ij = E_j;
       float xj = temp_rechit_j->getCellCoordinate_xyz().at(0);
       float yj = temp_rechit_j->getCellCoordinate_xyz().at(1);
       float r_ij = R_ij(xi,yi,xj,yj);
-      if(abs(r_ij) > 2.0) continue;
+      if(abs(r_ij) > 2.0) continue; //Use it with expo density definition
+      // if(abs(r_ij) > 2.0) {
+      // 	chi_ij = 0.0;
+      // }
+      // temp_density += chi_ij;
       temp_density += (E_j)*exp(-r_ij/k);
     }
     //std::cout<<"temp_density= "<<temp_density<<endl;

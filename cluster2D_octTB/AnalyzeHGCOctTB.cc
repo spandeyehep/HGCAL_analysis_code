@@ -157,12 +157,13 @@ void AnalyzeHGCOctTB::EventLoop(const char *data) {
 
 
     for(int i = 0; i<40; i++) {
-      // if(i+1 != 13) continue;
+      //if(i+1 != 30) continue;
       cout<<endl<<endl;
       cout<<"Size of rechit object for layer "<<i+1<<" = "<<rechits[i].size()<<endl;
 
-      cout<<"INFO: Calculating  density & delta for layer = "<<i+1<<endl;
+      cout<<"INFO: Calculating  density & delta for layer "<<i+1<<endl;
       std::vector<RecHit*> rechit_collection_1 = makeCluster(rechits[i]);
+      cout<<" rechit_collection_1.size() = "<<rechit_collection_1.size()<<endl;
       cout<<"INFO: Sending Rechit_collection of layer "<<i+1<<" to clustering algorithm..."<<endl;
 
       //std::vector<Cluster2D*> cluster_collection_1 = ClusterProducer(rechit_collection_1);
@@ -173,8 +174,9 @@ void AnalyzeHGCOctTB::EventLoop(const char *data) {
       // cout<<"S I Z E = "<<cluster_collection_1.size()<<endl;
       
       if(!cluster_collection_1.size()) {
-	cout<< "INFO: Something Went wrong!!!"<<endl;
-	return;
+	cout<<"INFO: No clusters made for layer "<<i+1<<" for Entry = "<<jentry+1<<endl;
+	//cout<< "INFO: Something Went wrong!!!"<<endl;
+	continue;
       }
       else {
 	cout<<"INFO: clustering successfull!!!"<<endl;
