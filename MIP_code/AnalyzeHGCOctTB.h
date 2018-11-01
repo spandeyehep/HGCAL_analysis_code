@@ -203,9 +203,6 @@ void AnalyzeHGCOctTB::moduleMap_init(const char* config) {
   int modID_, part_, layer_, pos_;
   cout<<"File name = "<<f_name<<endl;
   while(in>>modID_>>part_>>layer_>>pos_){
-    //if(modID_ == 54) {
-      cout<<modID_<<" "<<part_<<" "<<layer_<<" "<<pos_<<endl;
-      //}
     std::pair<int, std::vector<int>> temp_pair;
     std::vector<int> temp_vector;
     temp_vector.push_back(part_);
