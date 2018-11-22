@@ -1,5 +1,0 @@
-/home/shubham/work/HGCAL/CERNTB/samples/promt_reco/prompt_reco_324.root
-/home/shubham/work/HGCAL/CERNTB/samples/promt_reco/prompt_reco_325.root
-/home/shubham/work/HGCAL/CERNTB/samples/promt_reco/prompt_reco_326.root
-/home/shubham/work/HGCAL/CERNTB/samples/promt_reco/prompt_reco_327.root
-/home/shubham/work/HGCAL/CERNTB/samples/promt_reco/prompt_reco_328.root

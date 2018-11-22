@@ -1,1 +1,0 @@
-/home/shubham/work/HGCAL/CERNTB/samples/promt_reco/prompt_reco_260.root

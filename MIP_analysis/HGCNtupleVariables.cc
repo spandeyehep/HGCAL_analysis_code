@@ -8,6 +8,12 @@
 
 
 
+float HGCNtupleVariables::deltaR(float x1, float y1, float x2, float y2) {
+  float deltaR_ = sqrt(pow((x2-x1),2) + pow((y2-y1),2));
+  return deltaR_;
+}
+
+
 int HGCNtupleVariables::getBIN(unsigned int skiroc,unsigned int channel) {
   if (channel%2 != 0 || channel > 62 || skiroc > 3) return -1;
   else return (skiroc*32 + (channel/2));

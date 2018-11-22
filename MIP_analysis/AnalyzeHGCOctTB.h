@@ -19,8 +19,8 @@ class AnalyzeHGCOctTB : public HGCNtupleVariables{
  public:
   AnalyzeHGCOctTB(const TString &inputFileList="foo.txt", const char *outFileName="histo.root",const char *dataset="data", const char *config="alpha");
   ~AnalyzeHGCOctTB();
-  //Bool_t   FillChain(TChain *chain, TChain *chain2, const TString &inputFileList);
-  Bool_t   FillChain(TChain *chain, const TString &inputFileList);
+  Bool_t   FillChain(TChain *chain, TChain *chain2, const TString &inputFileList);
+  /* Bool_t   FillChain(TChain *chain, const TString &inputFileList); */
   Long64_t LoadTree(Long64_t entry);
   void     EventLoop(const char *);
   void     BookHistogram(const char *, const char *);
@@ -37,12 +37,16 @@ class AnalyzeHGCOctTB : public HGCNtupleVariables{
   const char *conf_;  
   /* TH1F *h_ADChg[128]; */
   TH1F *h_adcHG_EE[28][128];
+  TH1F *h_adcHG_EE_track[28][128];
   TH1F *h_adcHG_FH[12][7][128];
+  TH1F *h_adcHG_FH_track[12][7][128];
   TH1F *h_NRechits_EE[28];
   TH1F *h_NRechits_FH[12][7];
   // TH1F* h_nrechits;
   // TH1F* h_nrechit_1evt[5];	// Tracking hits in a single event
+  TH1F* h_configuration;
   TH1F* h_particleID;
+  TH1F* h_nTracks;
   TH1F* h_beamEnergy;
   TH1F* h_runNumber;
   TH1F* h_moduleID;
@@ -50,11 +54,19 @@ class AnalyzeHGCOctTB : public HGCNtupleVariables{
   TH1F* h_rechit_energy_all;
   TH1F* h_Nrechit_EE;
   TH1F* h_Nrechit_FH;
+  //TH1F* h_Nrechit;
   TH1F* h_rechit_energy_EE_only;
   TH1F* h_rechit_energy_FH_only;
   TH2F* h_rechit_energy_EE_vs_FH;
   TH2F* h_Nrechit_EE_vs_FH;
   TH1F* h_ERechits_layer[28];
+  TH1F* h_dR[28];
+  TH2F* h_dX_dY_layer[28];
+  TH2F* h_rechitX_vs_trackX_layer[28];
+  TH2F* h_rechitY_vs_trackY_layer[28];
+  TH2F* h_rechitX_vs_rechitY_layer[28];
+  TH2F* h_trackX_vs_trackY_layer[28];
+
   //TH1F* h_shower_profile[100];
   TH1F* h_ERechits_full_official_calib;
   TH1F* h_ERechits_full_my_calib;
@@ -74,6 +86,8 @@ void AnalyzeHGCOctTB::BookHistogram(const char *outFileName, const char* conf) {
   char* dir_name = new char[200];
   conf_ = conf;
   oFile = new TFile(outFileName, "recreate");
+  h_nTracks = new TH1F("h_nTracks","Tracks",12,-1,5);
+  h_configuration = new TH1F("h_configuration","Configuration",60,-10,50);
   h_particleID = new TH1F("h_particleID","particleID",500,0,500);
   h_beamEnergy = new TH1F("h_beamEnergy","beamEnergy",500,0,500);
   h_runNumber = new TH1F("h_runNumber","RunNumber",2000,0,1000);
@@ -98,24 +112,45 @@ void AnalyzeHGCOctTB::BookHistogram(const char *outFileName, const char* conf) {
   d_adcHG = oFile->mkdir("ADC_distributions");
   d_adcHG->cd();
   for(int i = 0; i < 28; i++) {
+    if((!strcmp(conf,"charlie") || !strcmp(conf,"config3")) && (i+1 > 8)) break;
     sprintf(dir_name,"EE_%d",i+1);
     d_EE[i] = d_adcHG->mkdir(dir_name);
     d_EE[i]->cd();
     sprintf(hname,"h_Nrechits_EE_L%d",i+1);
     h_NRechits_EE[i] = new TH1F(hname, hname, 50, 0, 50);
+    sprintf(hname,"h_dR_layer_%d",i+1);
+    h_dR[i] = new TH1F(hname,hname,21.0,-1.0,20.0);
+
+    sprintf(hname,"h_rechitX_rechitY_layer_%d",i+1);
+    h_rechitX_vs_rechitY_layer[i] = new TH2F(hname,hname,16,-8.0,8.0,16,-8.0,8.0);
+    sprintf(hname,"h_trackX_trackY_layer_%d",i+1);
+    h_trackX_vs_trackY_layer[i] = new TH2F(hname,hname,16,-8.0,8.0,16,-8.0,8.0);
+
+    sprintf(hname,"h_rechitX_trackX_layer_%d",i+1);
+    h_rechitX_vs_trackX_layer[i] = new TH2F(hname,hname,16,-8.0,8.0,16,-8.0,8.0);
+    sprintf(hname,"h_rechitY_trackY_layer_%d",i+1);
+    h_rechitY_vs_trackY_layer[i] = new TH2F(hname,hname,16,-8.0,8.0,16,-8.0,8.0);
+
+
+    sprintf(hname,"h_dX_dY_layer_%d",i+1);
+    h_dX_dY_layer[i] = new TH2F(hname,hname,16,-8.0,8.0,16,-8.0,8.0);
+
     int chan = 0;
     for(int chip = 0; chip < 4; chip++) {
       for(int cc = 0; cc < 64; cc+=2,chan++) {
 	sprintf(hname,"h_adcHG_EE_L%d_P0_chip%d_chan%d",i+1,chip,cc);
 	h_adcHG_EE[i][chan] = new TH1F(hname, hname, 100, 0, 400);
+	sprintf(hname,"h_adcHG_EE_L%d_P0_chip%d_chan%d_track",i+1,chip,cc);
+	h_adcHG_EE_track[i][chan] = new TH1F(hname, hname, 100, 0, 400);
+
       }
     }
   }
   for(int i = 0; i < 12; i++){
     for(int j = 0; j < 7; j++) {
-      if(!strcmp(conf,"alpha") && (i+1)>9 ) {
-	  if((j+1) != 4) continue;
-	}
+      /* if(!strcmp(conf,"alpha") && (i+1)>9 ) { */
+      /* 	  if((j+1) != 4) continue; */
+      /* 	} */
 
 	sprintf(dir_name,"FH_L%d_P%d",i+1,j+1);
 	d_FH[i][j] = d_adcHG->mkdir(dir_name);
@@ -129,11 +164,12 @@ void AnalyzeHGCOctTB::BookHistogram(const char *outFileName, const char* conf) {
 	  for(int cc = 0; cc < 64; cc+=2,chan++) {
 	    sprintf(hname,"h_adcHG_FH_L%d_P%d_chip%d_chan%d",i+1,j+1,chip,cc);
 	    h_adcHG_FH[i][j][chan] = new TH1F(hname, hname, 100, 0, 400);
+	    sprintf(hname,"h_adcHG_FH_L%d_P%d_chip%d_chan%d_track",i+1,j+1,chip,cc);
+	    h_adcHG_FH_track[i][j][chan] = new TH1F(hname, hname, 100, 0, 400);
+
 
 	  }
 	}
-      for(int chan = 0; chan < 128; chan++) {
-      }
     }
   }
   // sprintf(hname,"h_rechit_E_full_official");
@@ -261,22 +297,22 @@ void AnalyzeHGCOctTB::moduleMap_init(const char* config) {
 AnalyzeHGCOctTB::AnalyzeHGCOctTB(const TString &inputFileList, const char *outFileName, const char* dataset, const char* config) {
 
   TChain *tree = new TChain("rechitntupler/hits");
-  // TChain *tree2 = new TChain("trackimpactntupler/impactPoints");
+  TChain *tree2 = new TChain("trackimpactntupler/impactPoints");
 
-  // if( ! FillChain(tree, tree2, inputFileList) ) {
-  //   std::cerr << "Cannot get the tree " << std::endl;
-  // } else {
-  //   std::cout << "Initiating analysis of dataset " << dataset << std::endl;
-  // }
-
-  if( ! FillChain(tree, inputFileList) ) {
+  if( ! FillChain(tree, tree2, inputFileList) ) {
     std::cerr << "Cannot get the tree " << std::endl;
   } else {
     std::cout << "Initiating analysis of dataset " << dataset << std::endl;
   }
 
-  // HGCNtupleVariables::Init(tree, tree2);
-  HGCNtupleVariables::Init(tree);
+  /* if( ! FillChain(tree, inputFileList) ) { */
+  /*   std::cerr << "Cannot get the tree " << std::endl; */
+  /* } else { */
+  /*   std::cout << "Initiating analysis of dataset " << dataset << std::endl; */
+  /* } */
+
+  HGCNtupleVariables::Init(tree, tree2);
+  /* HGCNtupleVariables::Init(tree); */
 
   BookHistogram(outFileName, config);
   moduleMap_init(config);
@@ -285,8 +321,8 @@ AnalyzeHGCOctTB::AnalyzeHGCOctTB(const TString &inputFileList, const char *outFi
   
 }
 
-//Bool_t AnalyzeHGCOctTB::FillChain(TChain *chain, TChain *chain2, const TString &inputFileList) {
-Bool_t AnalyzeHGCOctTB::FillChain(TChain *chain, const TString &inputFileList) {
+Bool_t AnalyzeHGCOctTB::FillChain(TChain *chain, TChain *chain2, const TString &inputFileList) {
+/* Bool_t AnalyzeHGCOctTB::FillChain(TChain *chain, const TString &inputFileList) { */
 
   ifstream infile(inputFileList, ifstream::in);
   std::string buffer;
@@ -302,10 +338,10 @@ Bool_t AnalyzeHGCOctTB::FillChain(TChain *chain, const TString &inputFileList) {
     if(!infile.good()) break;
     //std::cout << "Adding tree from " << buffer.c_str() << std::endl;                                                              
     chain->Add(buffer.c_str());
-    //chain2->Add(buffer.c_str());
+    chain2->Add(buffer.c_str());
   }
   std::cout << "No. of Entries in chain  : " << chain->GetEntries() << std::endl;
-  //std::cout << "No. of Entries in chain2 : " << chain2->GetEntries() << std::endl;
+  std::cout << "No. of Entries in chain2 : " << chain2->GetEntries() << std::endl;
   return kTRUE;
 }
 
@@ -321,15 +357,15 @@ Long64_t AnalyzeHGCOctTB::LoadTree(Long64_t entry) {
     //    Notify();
   }
 
-  // if (!fChain2) return -5;
-  // Long64_t centry2 = fChain2->LoadTree(entry);
-  // if (centry2 < 0) return centry2;
-  // if (!fChain2->InheritsFrom(TChain::Class()))  return centry2;
-  // TChain *chain2 = (TChain*)fChain2;
-  // if (chain2->GetTreeNumber() != fCurrent) {
-  //   fCurrent = chain->GetTreeNumber();
-  //   //    Notify();
-  // }
+  if (!fChain2) return -5;
+  Long64_t centry2 = fChain2->LoadTree(entry);
+  if (centry2 < 0) return centry2;
+  if (!fChain2->InheritsFrom(TChain::Class()))  return centry2;
+  TChain *chain2 = (TChain*)fChain2;
+  if (chain2->GetTreeNumber() != fCurrent) {
+    fCurrent = chain->GetTreeNumber();
+    //    Notify();
+  }
 
   
   //if (centry==centry2)
