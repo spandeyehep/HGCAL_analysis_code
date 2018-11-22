@@ -18,7 +18,7 @@ Define the paths of the your input ntuples in the "InputFileList.txt" file.
 > ./analyzeHGCMuons <fileList.txt> <outputFile.root> data <configuration>
 
 For example: if you have defined the paths of the file in InputFileList.txt and the corresponding runs are from configuration-1, then you should use:
-> ./analyzeHGCMuons ./InputFileList.txt outPut.root data bravo
+> ./analyzeHGCMuons ./InputFileList.txt outPut.root data alpha
 
 Note:
 configuration arguments for the code:
