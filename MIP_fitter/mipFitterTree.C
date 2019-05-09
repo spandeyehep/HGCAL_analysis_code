@@ -12,7 +12,8 @@
 #include <sstream>
 #include <fstream>
 #include <TGraphAsymmErrors.h>
-
+#include <iomanip>
+#include "helper.h"
 #ifndef __CINT__
 #include "RooGlobalFunc.h"
 #endif
@@ -28,88 +29,83 @@
 #include "RooHist.h"
 #include "RooCurve.h"
 #include "RooFitResult.h"
+
 using namespace RooFit;
 
 ofstream myfile;
-TFile* _file0 = TFile::Open("/home/work/spandey/public/MIP_calibration/samples/v10/muon_v10.root");
+ofstream myfile_all;
+// TFile* _file0 = TFile::Open("Muon_200GeV_config3_v1.root");
+TFile* _file0 = TFile::Open("./root_files/muon_v13pre1_TS2_highGain.root");
+// TFile* _file0 = TFile::Open("/home/work/spandey/public/MIP_calibration/CMSSW_8_0_1/src/v11/alignment_inclusion/track_matching_132_161_v11.root");
 
-void Loop(unsigned int layer,unsigned int skiroc,unsigned int channel)
+void Loop(const char *part, unsigned int layer, unsigned int position,unsigned int skiroc,unsigned int channel, unsigned int module)
 {
-  //if (fChain == 0) return;
+  
+  const int min_ = 0.0;
+  const int max_ = 200.0;
+  const int tf1_min = 20.0;
+  const int tf1_max = 60.0;
+  // const int tf1_min = 20.0;
+  // const int tf1_max = 400.0;
 
-  //TFile* _file0 = TFile::Open("/home/work/spandey/public/MIP_calibration/samples/v10/132_162/muon_132_162_v10.root");
+  bool print_draw = true;
+  bool save_canvas = true;
+  int bin_ = max_/2;
+  std::ostringstream os(std::ostringstream::ate);
+  os.str("");
+  os<<"Module="<<module<<" Chip="<<skiroc<<" Channel="<<channel;
 
-  TTree* tree = (TTree*)_file0->Get("rechitntupler/hits");
+  char* hname = new char[200];
+  if(!strcmp(part,"EE")) {
+    sprintf(hname,"ADC_distributions/%s_%d/h_adcHG_EE_L%d_P0_chip%d_chan%d_track",part,layer,layer,skiroc,channel);
+  }
+  else if(!strcmp(part,"FH")) {
+    sprintf(hname,"ADC_distributions/%s_L%d_P%d/h_adcHG_FH_L%d_P%d_chip%d_chan%d_track",part,layer,position,layer,position,skiroc,channel);
+  }
+  TH1F* h = (TH1F*)_file0->Get(hname);
+  if(!h) {
+    cout<<"Error: Could NOT load histogram = "<<hname<<endl;
+    float ADC_MIP = 45.0;
+   float chi2_ndf = -1.0;
+   int en_chan = (skiroc*1000+channel);
+   float mpv_val = 0.0;
+   float adc_err = 0.0;
+   int h_entry = 0.0;
+   double const_val = 0.0;
+   double err = 0.0;
+   int use_avg = 1;
+   float noise_ = 0.0;
+   float noise_err = 0.0;
+   char *line = new char[1000];
+   sprintf(line,"%d %d %d %d %.2f %.2f %.2f %d %.4f %.4f %.2f %d %.2f %.2f\n",module,skiroc,channel,en_chan,ADC_MIP,chi2_ndf,adc_err,h_entry,const_val,err,mpv_val,use_avg,noise_,noise_err);
+   myfile_all << line;
 
+    return;
+  }
+  else {
+    cout<<"INFO: Taking histogram = "<<hname<<endl;
+    cout<<"INFO: histogram loaded!!!"<<endl;
+  }
+  if(h->GetEntries() < 100) {
+    cout<<"Error: "<<hname<<" has entries less than 10 !!!!"<<endl;
+    float ADC_MIP = 45.0;
+    float chi2_ndf = -1.0;
+    int en_chan = (skiroc*1000+channel);
+    float mpv_val = 0.0;
+    float adc_err = 0.0;
+    int h_entry = h->GetEntries();
+    double const_val = 0.0;
+    double err = 0.0;
+    int use_avg = 1;
+    float noise_ = 0.0;
+    float noise_err = 0.0;
+    char *line = new char[1000];
+    sprintf(line,"%d %d %d %d %.2f %.2f %.2f %d %.4f %.4f %.2f %d %.2f %.2f\n",module,skiroc,channel,en_chan,ADC_MIP,chi2_ndf,adc_err,h_entry,const_val,err,mpv_val,use_avg,noise_,noise_err);
+   myfile_all << line;
 
-  vector<float> *rechit_amplitudeHigh_ = nullptr;
-  vector<unsigned int> *rechit_layer_ = nullptr;
-  vector<unsigned int> *rechit_chip_ = nullptr;
-  vector<unsigned int> *rechit_channel_ = nullptr;
+    return;
+  }
 
-
-  TBranch* b_rechit_amplitudeHigh;
-  TBranch* b_rechit_layer;
-  TBranch* b_rechit_chip;
-  TBranch* b_rechit_channel;
-
-  tree->SetMakeClass(1);
-
-  tree->SetBranchAddress("rechit_amplitudeHigh", &rechit_amplitudeHigh_, &b_rechit_amplitudeHigh);
-  tree->SetBranchAddress("rechit_layer", &rechit_layer_, &b_rechit_layer);
-  tree->SetBranchAddress("rechit_chip", &rechit_chip_, &b_rechit_chip);
-  tree->SetBranchAddress("rechit_channel", &rechit_channel_, &b_rechit_channel);
-
-
-  // for( unsigned entry = 0; entry < std::min((unsigned)50000000,(unsigned)(tree->GetEntriesFast()) ); entry++){
-  // }
-  Long64_t nentries = (Long64_t)(tree->GetEntriesFast());
-
-   cout<<nentries<<endl;
-   // tree->GetEntry(0);
-   cout<<"YOLO"<<endl;
-
-   const int max_ = 400.0;
-   const int tf1_min = 20.0;
-   const int tf1_max = 60.0;
-   bool print_draw = true;
-   int bin_ = max_/2;
-   std::ostringstream os(std::ostringstream::ate);
-   os.str("");
-   os<<"Board="<<layer<<" Chip="<<skiroc<<" Channel="<<channel;
-   //TH1F* h=new TH1F(os.str().c_str(),os.str().c_str(),bin_,0,max_);
-   TH1F* h=new TH1F(os.str().c_str(),os.str().c_str(),bin_,0,max_);
-   
-
-   //Long64_t nbytes = 0, nb = 0;
-   cout<<nentries<<endl;
-   // tree->GetEntry(0);
-   
-   for (Long64_t jentry=0; jentry<nentries;jentry++) {
-     //Long64_t ientry = LoadTree(jentry);
-     tree->GetEntry(jentry);
-     // if (ientry < 0) break;
-     // nb = fChain->GetEntry(jentry);   nbytes += nb;
-     // if (Cut(ientry) < 0) continue;
-     //if( boardID==layer && skirocID==skiroc && channelID==channel && HighGainADC<200 && HighGainADC>20){
-     //if( boardID==layer && skirocID==skiroc && channelID==channel && HighGainADC<max_ && HighGainADC>20){
-     
-     // cout<<"ADC:layer:chip:channel"<<endl
-     // 	 <<rechit_amplitudeHigh_->size()<<":"
-     // 	 <<rechit_layer_->size()<<":"
-     // 	 <<rechit_chip_->size()<<":"
-     // 	 <<rechit_channel_->size()<<endl;
-     // h->Fill(1);
-     for(unsigned int i = 0; i < rechit_layer_->size(); i++) {
-       //if( boardID==layer && skirocID==skiroc && channelID==channel)   h->Fill(HighGainADC);
-       if( layer==(rechit_layer_->at(i)-1) && skiroc==(rechit_chip_->at(i)) && channel==(rechit_channel_->at(i)))
-	 h->Fill(rechit_amplitudeHigh_->at(i));
-     }
-   }
-   
-   // h->Draw();
-   // getchar();
-   
    TCanvas *cc;
    if (print_draw) {
      setTDRStyle();
@@ -117,15 +113,20 @@ void Loop(unsigned int layer,unsigned int skiroc,unsigned int channel)
      cc->SetWindowSize(650,600);
    }
 
+   
+   RooRealVar x("x","ADC count (high gain)",min_,max_) ;
+   // RooRealVar x("x","ADC count (high gain)",20.0,max_) ;
+   // RooRealVar x("x","ADC count (high gain)",0.0,max_) ;
 
-   RooRealVar x("x","ADC count (high gain)",20,max_) ;
    RooArgList l = RooArgList(x);
 
    RooRealVar mean0("mean","Smearing mean (fixed at zero, no bias)",0.) ;
+   // RooRealVar mean0("mean","Smearing mean (fixed at zero, no bias)",20.) ;
    RooRealVar sigma0("SigmaG","Width of smearing gaussian",5,0,100) ;
    RooGaussian mipG0("mipG","Smearing gaussian",x,mean0,sigma0) ;  
 
-   RooRealVar ml0("MPV","Landau MPV",45.,10,70) ;
+   // RooRealVar ml0("MPV","Landau MPV",45.,10,70) ;
+   RooRealVar ml0("MPV","Landau MPV",30.,10,70) ;
    RooRealVar sl0("SigmaL","Landau sigma",5,0.,30) ;
    RooLandau landau1("l1","Single MIP distribution",x,ml0,sl0) ;
   
@@ -136,25 +137,16 @@ void Loop(unsigned int layer,unsigned int skiroc,unsigned int channel)
    RooFFTConvPdf l2xg("l2xg","landau2 (X) gauss",x,landau2,mipG0) ;
 
    RooRealVar p1("p1","coeff #0", 0); // zero slope === constant
-   //RooRealVar p1("p1","coeff #0",0.01,0.,0.1); // zero slope === constant
-   //RooRealVar p2("p2","coeff1",0.1,0.,1.0); // Non zero slope === constant
-   //RooRealVar p1("p1","coeff #1", ,); // zero slope === constant
    RooPolynomial grass("plot","bkgd pdf", x, RooArgList(p1));
-   //RooPolynomial grass("plot","bkgd pdf", x, RooArgList(p1,p2));
    RooGaussian noise("noise","Noise gaussian",x,mean0,sigma0) ;  
 
-   // RooRealVar n1mip("n1mip","n1mip",1e3,0.,1.e6) ;
-   // RooRealVar n2mip("n2mip","n2mip",1e1,0.,1.e6);
-   // RooRealVar nbkg("nbkg","nbkg",1e1,0.,1.e6);
-   // RooRealVar nnoise("nnoise","nbkg",1e1,0.,1.e6);
 
-   RooRealVar n1mip("n1mip","n1mip",1e1,0.,1.e6) ;
+   RooRealVar n1mip("n1mip","n1mip",1e3,0.,1.e6) ;
    RooRealVar n2mip("n2mip","n2mip",1e1,0.,1.e6);
    RooRealVar nbkg("nbkg","nbkg",1e1,0.,1.e6);
    RooRealVar nnoise("nnoise","nbkg",1e1,0.,1.e6);
 
    RooAddPdf model("model","(two landau(X)gaus) + noise + bkg",RooArgList(l1xg,l2xg,grass,noise),RooArgList(n1mip,n2mip,nbkg,nnoise));
-   // RooAddPdf model("model","(two landau(X)gaus)+ noise",RooArgList(l1xg,l2xg,noise),RooArgList(n1mip,n2mip,nnoise));
 
    
    RooDataHist data("data", h->GetTitle(), l, h);
@@ -171,14 +163,15 @@ void Loop(unsigned int layer,unsigned int skiroc,unsigned int channel)
    TGraphAsymmErrors* gr = xframe->getHist();
 
    model.paramOn(xframe);
-   //grass.plotOn(xframe,RooFit.Name("grass"));
-   //grass.plotOn(xframe);
-   
+   RooAbsReal* deriv = (RooAbsReal*)model.derivative(x,1) ;
+   Double_t new_max = deriv->findRoot(x,tf1_min,tf1_max,0) ;
+
    if (print_draw) {
      rfr->Print("V");
      xframe->Draw() ;
    }
-
+   //log log log
+   //gPad->SetLogy();
    TF1 *f=model.asTF( l );
 
    std::cout << "ml.getValV() = " << ml0.getValV() << "\t"
@@ -195,22 +188,41 @@ void Loop(unsigned int layer,unsigned int skiroc,unsigned int channel)
      TLatex *tex=new TLatex();
      tex->SetTextColor(kBlack);
      tex->SetTextSize(0.041);
+     //tex->DrawLatexNDC(0.15,0.96,os.str().c_str());
      tex->DrawLatexNDC(0.15,0.96,os.str().c_str());
      os.str("");
      //os << setprecision(3) << "MIP = " << f->GetMaximumX() << " #pm " << setprecision(1) << ml0.getError() << " ADC counts";
-     os << setprecision(3) << "MIP = " << f->GetMaximumX(tf1_min,tf1_max) << " #pm " << setprecision(1) << ml0.getError() << " ADC counts";
+     os << std::setprecision(3) << "MIP = " << f->GetMaximumX(tf1_min,tf1_max) << " #pm " << std::setprecision(1) << ml0.getError() << " ADC counts";
      //tex->DrawLatexNDC(0.44,0.85,os.str().c_str());
-     tex->DrawLatexNDC(0.44,0.45,os.str().c_str());
+     //tex->DrawLatexNDC(0.44,0.45,os.str().c_str());
+     tex->SetTextSize(0.031);
+     tex->DrawLatexNDC(0.55,0.45,os.str().c_str());
 
      os.str("");
-     os << setprecision(3) << "chi2/ndf = " << xframe->chiSquare();
-     tex->DrawLatexNDC(0.44,0.40,os.str().c_str());
+     os << std::setprecision(3) << "chi2/ndf = " << xframe->chiSquare();
+     tex->DrawLatexNDC(0.55,0.40,os.str().c_str());
 
      cc->Update();     
-     char* canvas_name = new char[20];
-     sprintf(canvas_name,"%d_%d_%d.gif",layer,skiroc,channel);
-     //cc->SaveAs(os.str().c_str());
-     cc->SaveAs(canvas_name);
+     char* canvas_name = new char[200];
+      
+     char *dir_name = new char[100];
+     if(!strcmp(part,"EE")) {
+       if(layer < 10)
+	 sprintf(dir_name,"gifs/v13pre1_TS2/0%dmodule%d",layer,module);
+       else
+	 sprintf(dir_name,"gifs/v13pre1_TS2/%dmodule%d",layer,module);
+     }
+     else {
+       sprintf(dir_name,"gifs/v13pre1_TS2/%dmodule%d",layer+28,module);
+     }
+     if(channel < 10) 
+       sprintf(canvas_name,"%s/%d_%d_0%d.gif",dir_name,module,skiroc,channel);
+     else
+       sprintf(canvas_name,"%s/%d_%d_%d.gif",dir_name,module,skiroc,channel);
+     
+     cout<<"canvas_name = "<<canvas_name<<endl;
+     if(save_canvas)
+       cc->SaveAs(canvas_name);
    }
 
    double const_val = nbkg.getValV()/h->GetEntries();
@@ -227,46 +239,98 @@ void Loop(unsigned int layer,unsigned int skiroc,unsigned int channel)
    float chi2_ndf = xframe->chiSquare();
    int en_chan = (skiroc*1000+channel);
    float mpv_val = ml0.getValV();
-   char *line = new char[50];
-   sprintf(line,"%d %d %d %d %.2f %.2f %.4f %.4f %.2f\n",layer,skiroc,channel,en_chan,ADC_MIP,chi2_ndf,const_val,err,mpv_val);
+   float adc_err = ml0.getError();
+   float noise_ = sigma0.getValV();
+   float noise_err = sigma0.getError();
+   char *line = new char[1000];
+   char *ins = new char[1000];
+   int h_entry = h->GetEntries();
+   int use_avg = 0;
+   if(ADC_MIP < 25) {
+     use_avg = 1;
+   }
+   else {
+     use_avg = 0;
+   }
+   cout<<"\n\n MIP = "<<ADC_MIP<<" \t derivative_root = "<<new_max<<endl;
+   sprintf(line,"%d %d %d %d %.2f %.2f %.2f %d %.4f %.4f %.2f %d %.2f %.2f\n",module,skiroc,channel,en_chan,ADC_MIP,chi2_ndf,adc_err,h_entry,const_val,err,mpv_val,use_avg,noise_,noise_err);
+   sprintf(ins,"%d\t%d\t%d\t%.2f\t%.2f\t%.2f\t%d\n",module,skiroc,channel,ADC_MIP,chi2_ndf,adc_err,h_entry);
+
    cout<<line<<endl;
-   myfile << line;
-   tree->Delete();
+   myfile_all << line;
+
 }
 
+void for_oct_TB(){
+  char *f_name = new char[500];
+  char *arg = new char[500];
+  // int modd = 144;
+  myfile_all.open("./signal.txt");
+  // myfile_all.open("./temp.txt");
 
-void runAllChannel(unsigned int layer,unsigned int skiroc)
-{
-  // mipFitterTree m;
-  // char *f_name = new char[30];
-  // sprintf(f_name,"calib_file_skiroc_%d.txt",skiroc);
-  // myfile.open (f_name);
-
-  for(int i=0; i<32; i++){
-    Loop(layer,skiroc,2*i);
+  sprintf(f_name,"../config_maps/moduleMAP_config1.txt");
+  //moduleMap_init("charlie");
+  moduleMap_init("alpha");
+  std::ifstream in(f_name);
+  if(!in){
+    cout<<"Could not find "<<f_name<<endl;
+    return;
   }
-  //myfile.close();
+  int modID_, part_, layer_, pos_;
+  int count  = 0;
+  cout<<"File name = "<<f_name<<endl;
+  while(in>>modID_>>part_>>layer_>>pos_){
+    // if(modID_  != modd) continue;
+    // cout<<modID_<<" "<<(modID_  == 143 || modID_  == 144 || modID_  == 145 )<<endl;
+    std::vector<int> temp_loc = getModuleLocation(modID_);
+
+    if(temp_loc.size() < 3) {
+      cout<<"Could Not locate module #"<<modID_<<"!!!"<<endl;
+      continue;
+    }
+    else {
+      if(temp_loc.at(0) == 0) {
+	if(modID_ != 90) continue;
+	// continue;
+	//sprintf(arg,"EE_%d_%d",temp_loc.at(1),temp_loc.at(2));
+	sprintf(arg,"EE_%d_%d",temp_loc.at(1),temp_loc.at(2));
+	// cout<<"Layer = "<<temp_loc.at(1)<<" , Position = "<<temp_loc.at(2)<<endl;
+	// continue;
+	// Loop("EE",temp_loc.at(1),temp_loc.at(2),2,36,modID_);
+	for(int i = 0; i < 4; i++) {
+	  for(int j = 0; j < 64; j+=2) {
+	    Loop("EE",temp_loc.at(1),temp_loc.at(2),i,j,modID_);
+
+	    
+	  }
+	  //return;
+	  // break;
+	}
+	
+      }
+      else if(temp_loc.at(0) == 1) {
+	continue;
+	if(temp_loc.at(2)!=4) continue;
+
+	for(int i = 0; i < 4; i++) {
+	  for(int j = 0; j < 64; j+=2) {
+	    Loop("FH",temp_loc.at(1),temp_loc.at(2),i,j,modID_);
+	  }
+	}
+
+
+      }
+      else{
+	sprintf(arg,"WHAT");
+      }
+
+    }
+
+    cout<<layer_<<" MODULE "<<modID_<<" LOCATION = "<<arg<<endl;
+  }
+
+  myfile_all.close();
+  return;
+
 }
-
-
-void runAllSkiROC(unsigned int layer)
-{
-   char *f_name = new char[30];
-   sprintf(f_name,"calib_file_layer_%d.txt",layer);
-   myfile.open (f_name);
-   for(int i=0; i<4; i++){
-     runAllChannel(layer,i);
-   }
-   myfile.close();
-}
-
-
-void runAllLayers(unsigned int layer_start, unsigned int layer_end)
-{
-  for(unsigned int i=(layer_start); i<=layer_end; i++) {
-     runAllSkiROC(i);
-   }
-
-}
-
 
