@@ -7,9 +7,7 @@ git clone -b pionOctTB_showerFinder git@github.com:spandeyehep/HGCAL_analysis_co
 cd ShowerFinder/ <br/>
 make <br/>
 
-#in order to Run the code, use following command : <br/>
-Syntax is as follows <br/>
-
+#in order to Run the code, use following syntax : <br/>
 ./analyzeHGCOctTB <path_of_inputFile_list> <outFileName> data <configuration> <energy> <br/>
 
 e.g. <br/>
