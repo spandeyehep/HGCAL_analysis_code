@@ -1,33 +1,33 @@
 # HGCAL_analysis_code
 
-cmsrel CMSSW_9_3_0 
-cd CMSSW_9_3_0/src
-cmsenv
-git clone -b pionOctTB_showerFinder git@github.com:spandeyehep/HGCAL_analysis_code.git
-cd ShowerFinder/
-make
+cmsrel CMSSW_9_3_0 <br/>
+cd CMSSW_9_3_0/src <br/>
+cmsenv <br/>
+git clone -b pionOctTB_showerFinder git@github.com:spandeyehep/HGCAL_analysis_code.git <br/>
+cd ShowerFinder/ <br/>
+make <br/>
 
-#in order to Run the code, use following command :
-Syntax is as follows
+#in order to Run the code, use following command : <br/>
+Syntax is as follows <br/>
 
-./analyzeHGCOctTB <path_of_inputFile_list> <outFileName> data <configuration> <energy>
+./analyzeHGCOctTB <path_of_inputFile_list> <outFileName> data <configuration> <energy> <br/>
 
-e.g.
-./analyzeHGCOctTB ./file_list/v12/pion200_config1_one_file.txt output.root data alpha 200
-
-
-Note:
-<configuration> arguments for the code:
-use, 
-"alpha" or "config1" for configuration-1
-"bravo" or "config2" for configuration-2  
-"charlie" or "config3" for configuration-3
+e.g. <br/>
+./analyzeHGCOctTB ./file_list/v12/pion200_config1_one_file.txt output.root data alpha 200 <br/>
 
 
-Short Description of the codes:
+Note: <br/>
+<configuration> arguments for the code: <br/>
+use,  <br/>
+"alpha" or "config1" for configuration-1 <br/>
+"bravo" or "config2" for configuration-2   <br/>
+"charlie" or "config3" for configuration-3 <br/>
 
-HGCNtupleVariables.h  : Contains variables from the ntuples for rechits and DWC track(taken from MakeClass) & AHCAL
-AnalyzeHGCMuons.h     : For declaring and booking histograms and various initialization
-HGCNtupleVariables.cc : Contains helper functions.
-AnalyzeHGCOctTB.cc    : Contains event loop. (Main Analysis Code)
+
+Short Description of the codes: <br/>
+
+HGCNtupleVariables.h  : Contains variables from the ntuples for rechits and DWC track(taken from MakeClass) & AHCAL <br/>
+AnalyzeHGCMuons.h     : For declaring and booking histograms and various initialization <br/>
+HGCNtupleVariables.cc : Contains helper functions. <br/>
+AnalyzeHGCOctTB.cc    : Contains event loop. (Main Analysis Code) <br/>
 
