@@ -1,0 +1,9 @@
+/afs/cern.ch/work/s/spandey/public/hgcal/2018_TB/OctoberTB/hgcal_ahcal_samples/v3_v14/pion20/fulltree_679.root
+/afs/cern.ch/work/s/spandey/public/hgcal/2018_TB/OctoberTB/hgcal_ahcal_samples/v3_v14/pion20/fulltree_680.root
+/afs/cern.ch/work/s/spandey/public/hgcal/2018_TB/OctoberTB/hgcal_ahcal_samples/v3_v14/pion20/fulltree_681.root
+/afs/cern.ch/work/s/spandey/public/hgcal/2018_TB/OctoberTB/hgcal_ahcal_samples/v3_v14/pion20/fulltree_682.root
+/afs/cern.ch/work/s/spandey/public/hgcal/2018_TB/OctoberTB/hgcal_ahcal_samples/v3_v14/pion20/fulltree_683.root
+/afs/cern.ch/work/s/spandey/public/hgcal/2018_TB/OctoberTB/hgcal_ahcal_samples/v3_v14/pion20/fulltree_685.root
+/afs/cern.ch/work/s/spandey/public/hgcal/2018_TB/OctoberTB/hgcal_ahcal_samples/v3_v14/pion20/fulltree_687.root
+/afs/cern.ch/work/s/spandey/public/hgcal/2018_TB/OctoberTB/hgcal_ahcal_samples/v3_v14/pion20/fulltree_688.root
+/afs/cern.ch/work/s/spandey/public/hgcal/2018_TB/OctoberTB/hgcal_ahcal_samples/v3_v14/pion20/fulltree_689.root
