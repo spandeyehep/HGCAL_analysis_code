@@ -6,4 +6,4 @@ cd sim_pion_energy_scales_NewEvntCat_chi2 <br/>
 make <br/>
 **./analyzeHGCOctTB** <file_list> <output_file> **sim** **alpha** <beam_energy> <br/>
 For example: <br/>
-**./analyzeHGCOctTB** **file_list/CMSSW11_0_withAHCAL_newBeamline/QGSP_BERT/sim_pion_20.txt** **outPut.root** **sim** **alpha** **100**
+**./analyzeHGCOctTB** **file_list/CMSSW11_0_withAHCAL_newBeamline/QGSP_BERT/sim_pion_20.txt** **outPut.root** **sim** **alpha** **20**
