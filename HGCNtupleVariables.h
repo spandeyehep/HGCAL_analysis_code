@@ -11,6 +11,7 @@
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
+#include <TProfile.h>
 
 // Header file for the classes stored in the TTree if any.
 #include "vector"
@@ -22,11 +23,43 @@ public :
 
    HGCNtupleVariables(TTree * /*tree*/ =0) : fChain(0) { }
    ~HGCNtupleVariables() { }
-   //void    Init(TTree *tree);
+   /* void    Init(TTree *tree); */
    void    Init(TTree *tree, TTree *tree2);
    Bool_t  Notify();
    Int_t   GetEntry(Long64_t entry, Int_t getall = 0) { return fChain ? fChain->GetTree()->GetEntry(entry, getall) : 0; }
+   Int_t   GetEntry2(Long64_t entry, Int_t getall = 0) { return fChain2 ? fChain2->GetTree()->GetEntry(entry, getall) : 0; }
+  std::vector<int> getModuleLocation(int moduleID);
+  int getBIN(unsigned int skiroc,unsigned int channel);
+  float deltaR(float x1, float y1, float x2, float y2);
 
+  std::vector<float> getLayerPosition(int layer_);
+  std::map<int, std::vector<float>> layer_positions;
+
+  std::vector<float> getWeights(int beamEnergy_);
+  std::map<int, std::vector<float>> rel_weights;
+
+  std::vector<float> getChi2Weights_EH(int beamEnergy_);
+  std::map<int, std::vector<float>> chi2_weights_EH;
+
+  std::vector<float> getChi2Weights_H(int beamEnergy_);
+  std::map<int, std::vector<float>> chi2_weights_H;
+
+  //double shower_comparisons(TProfile* shower, TH1F* hist);
+  //double shower_comparisons(TProfile* shower, TH1F* ref_h);
+  // TH1F* shower_comparisons(TProfile* shower, TH1F* hist);
+  // float find_my_calib(int layer, int en_chan);
+  // float find_official_calib(int layer, int en_chan);
+  std::map<int, std::vector<int>> module_map;
+  std::map<int, std::pair<float,float> > align_map;
+  std::map<std::pair<int,int>, float > noise_map;
+  std::map<std::pair<int,int>, float > mip_ratio_map;
+  std::pair<float,float> dxy_alignment(int layer);
+  float getNoise(std::pair<int,int> mod_chip);
+  float getMIPRatio(std::pair<int,int> mod_chip);
+
+  // std::map<std::pair<int, int>, float> offical_calib_map;
+  // std::map<std::pair<int, int>, float> my_calib_map;
+  
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    TTree          *fChain2;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
@@ -40,6 +73,20 @@ public :
    Int_t           pdgID;
    Float_t         beamEnergy;
    Float_t         trueBeamEnergy;
+   Float_t         energyLostEE;
+   Float_t         energyLostFH;
+   Float_t         energyLostBH;
+   Float_t         energyLostBeam;
+   Float_t         energyLostOutside;
+   Float_t         energyLeakTransverseEE;
+   Float_t         energyLeakTransverseFH;
+   Float_t         energyLeakTransverseAH;
+   Float_t         energyLeakLongitudinal;
+   Float_t         energyLeakResidual;
+   Float_t         sim_energyAH;
+   /* vector<float>   *energyAbsorbedEE; */
+   /* vector<float>   *energyAbsorbedFH; */
+
    Int_t           NRechits;
    vector<unsigned int> *rechit_detid;
    vector<unsigned int> *rechit_module;
@@ -66,18 +113,41 @@ public :
    vector<float>   *rechit_TS3High;
    vector<float>   *rechit_TS3Low;
    vector<unsigned short> *rechit_Tot;
-   vector<float>   *rechit_time;
+   /* vector<float>   *rechit_time; */
    vector<float>   *rechit_timeMaxHG;
    vector<float>   *rechit_timeMaxLG;
    vector<unsigned short> *rechit_toaRise;
    vector<unsigned short> *rechit_toaFall;
 
+
+  //AHCAL
+  Int_t           ahc_nHits;
+  vector<int>     *ahc_hitI;
+  vector<int>     *ahc_hitJ;
+  vector<int>     *ahc_hitK;
+  vector<float>   *ahc_hitEnergy;
+
+  
    // List of branches
    TBranch        *b_event;   //!
    TBranch        *b_run;   //!
    TBranch        *b_pdgID;   //!
    TBranch        *b_beamEnergy;   //!
    TBranch        *b_trueBeamEnergy;   //!
+   TBranch        *b_energyLostEE;
+   TBranch        *b_energyLostFH;
+   TBranch        *b_energyLostBH;
+   TBranch        *b_energyLostBeam;
+   TBranch        *b_energyLostOutside;
+   TBranch        *b_energyLeakTransverseEE;
+   TBranch        *b_energyLeakTransverseFH;
+   TBranch        *b_energyLeakTransverseAH;
+   TBranch        *b_energyLeakLongitudinal;
+   TBranch        *b_energyLeakResidual;
+   TBranch        *b_sim_energyAH;
+   /* TBranch        *b_energyAbsorbedEE; */
+   /* TBranch        *b_energyAbsorbedFH; */
+
    TBranch        *b_NRechits;   //!
    TBranch        *b_rechit_detid;   //!
    TBranch        *b_rechit_module;   //!
@@ -104,12 +174,21 @@ public :
    TBranch        *b_rechit_TS3High;   //!
    TBranch        *b_rechit_TS3Low;   //!
    TBranch        *b_rechit_Tot;   //!
-   TBranch        *b_rechit_time;   //!
+   /* TBranch        *b_rechit_time;   //! */
    TBranch        *b_rechit_timeMaxHG;   //!
    TBranch        *b_rechit_timeMaxLG;   //!
    TBranch        *b_rechit_toaRise;   //!
    TBranch        *b_rechit_toaFall;   //!
 
+  //AHCAL
+   TBranch        *b_ahc_nHits;   //!
+   TBranch        *b_ahc_hitI;   //!
+   TBranch        *b_ahc_hitJ;   //!
+   TBranch        *b_ahc_hitK;   //!
+   TBranch        *b_ahc_hitEnergy;   //!
+
+
+  
    // second tree
    Int_t           ntracks;
    Float_t         impactX_HGCal_layer_1;
@@ -168,6 +247,32 @@ public :
    Float_t         impactY_HGCal_layer_27;
    Float_t         impactX_HGCal_layer_28;
    Float_t         impactY_HGCal_layer_28;
+   Float_t         impactX_HGCal_layer_29;
+   Float_t         impactY_HGCal_layer_29;
+   Float_t         impactX_HGCal_layer_30;
+   Float_t         impactY_HGCal_layer_30;
+   Float_t         impactX_HGCal_layer_31;
+   Float_t         impactY_HGCal_layer_31;
+   Float_t         impactX_HGCal_layer_32;
+   Float_t         impactY_HGCal_layer_32;
+   Float_t         impactX_HGCal_layer_33;
+   Float_t         impactY_HGCal_layer_33;
+   Float_t         impactX_HGCal_layer_34;
+   Float_t         impactY_HGCal_layer_34;
+   Float_t         impactX_HGCal_layer_35;
+   Float_t         impactY_HGCal_layer_35;
+   Float_t         impactX_HGCal_layer_36;
+   Float_t         impactY_HGCal_layer_36;
+   Float_t         impactX_HGCal_layer_37;
+   Float_t         impactY_HGCal_layer_37;
+   Float_t         impactX_HGCal_layer_38;
+   Float_t         impactY_HGCal_layer_38;
+   Float_t         impactX_HGCal_layer_39;
+   Float_t         impactY_HGCal_layer_39;
+   Float_t         impactX_HGCal_layer_40;
+   Float_t         impactY_HGCal_layer_40;
+
+
    Float_t         trackChi2_X;
    Float_t         trackChi2_Y;
    Int_t           dwcReferenceType;
@@ -234,6 +339,31 @@ public :
    TBranch        *b_impactY_HGCal_layer_27;   //!
    TBranch        *b_impactX_HGCal_layer_28;   //!
    TBranch        *b_impactY_HGCal_layer_28;   //!
+   TBranch         *b_impactX_HGCal_layer_29;
+   TBranch         *b_impactY_HGCal_layer_29;
+   TBranch         *b_impactX_HGCal_layer_30;
+   TBranch         *b_impactY_HGCal_layer_30;
+   TBranch         *b_impactX_HGCal_layer_31;
+   TBranch         *b_impactY_HGCal_layer_31;
+   TBranch         *b_impactX_HGCal_layer_32;
+   TBranch         *b_impactY_HGCal_layer_32;
+   TBranch         *b_impactX_HGCal_layer_33;
+   TBranch         *b_impactY_HGCal_layer_33;
+   TBranch         *b_impactX_HGCal_layer_34;
+   TBranch         *b_impactY_HGCal_layer_34;
+   TBranch         *b_impactX_HGCal_layer_35;
+   TBranch         *b_impactY_HGCal_layer_35;
+   TBranch         *b_impactX_HGCal_layer_36;
+   TBranch         *b_impactY_HGCal_layer_36;
+   TBranch         *b_impactX_HGCal_layer_37;
+   TBranch         *b_impactY_HGCal_layer_37;
+   TBranch         *b_impactX_HGCal_layer_38;
+   TBranch         *b_impactY_HGCal_layer_38;
+   TBranch         *b_impactX_HGCal_layer_39;
+   TBranch         *b_impactY_HGCal_layer_39;
+   TBranch         *b_impactX_HGCal_layer_40;
+   TBranch         *b_impactY_HGCal_layer_40;
+
    TBranch        *b_trackChi2_X;   //!
    TBranch        *b_trackChi2_Y;   //!
    TBranch        *b_dwcReferenceType;   //!
@@ -251,6 +381,7 @@ public :
 #ifdef HGCNtupleVariables_cxx
 
 void HGCNtupleVariables::Init(TTree *tree, TTree *tree2)
+/* void HGCNtupleVariables::Init(TTree *tree) */
 {
    // The Init() function is called when the selector needs to initialize
    // a new tree or chain. Typically here the branch addresses and branch
@@ -261,6 +392,9 @@ void HGCNtupleVariables::Init(TTree *tree, TTree *tree2)
    // (once per file to be processed).
 
    // Set object pointer
+  
+  /* energyAbsorbedEE = 0; */
+  /* energyAbsorbedFH = 0; */
    rechit_detid = 0;
    rechit_module = 0;
    rechit_layer = 0;
@@ -286,11 +420,19 @@ void HGCNtupleVariables::Init(TTree *tree, TTree *tree2)
    rechit_TS3High = 0;
    rechit_TS3Low = 0;
    rechit_Tot = 0;
-   rechit_time = 0;
+   /* rechit_time = 0; */
    rechit_timeMaxHG = 0;
    rechit_timeMaxLG = 0;
    rechit_toaRise = 0;
    rechit_toaFall = 0;
+
+   //AHCAL
+   ahc_hitI = 0;
+   ahc_hitJ = 0;
+   ahc_hitK = 0;
+   ahc_hitEnergy = 0;
+
+   
    // Set branch addresses and branch pointers
    if (!tree) return;
    fChain = tree;
@@ -302,6 +444,19 @@ void HGCNtupleVariables::Init(TTree *tree, TTree *tree2)
    fChain->SetBranchAddress("pdgID", &pdgID, &b_pdgID);
    fChain->SetBranchAddress("beamEnergy", &beamEnergy, &b_beamEnergy);
    fChain->SetBranchAddress("trueBeamEnergy", &trueBeamEnergy, &b_trueBeamEnergy);
+   fChain->SetBranchAddress("energyLostEE", &energyLostEE, &b_energyLostEE);
+   fChain->SetBranchAddress("energyLostFH", &energyLostFH, &b_energyLostFH);
+   fChain->SetBranchAddress("energyLostBH", &energyLostBH, &b_energyLostBH);
+   fChain->SetBranchAddress("energyLostBeam", &energyLostBeam, &b_energyLostBeam);
+   fChain->SetBranchAddress("energyLostOutside", &energyLostOutside, &b_energyLostOutside);
+   fChain->SetBranchAddress("energyLeakTransverseEE", &energyLeakTransverseEE, &b_energyLeakTransverseEE);
+   fChain->SetBranchAddress("energyLeakTransverseFH", &energyLeakTransverseFH, &b_energyLeakTransverseFH);
+   fChain->SetBranchAddress("energyLeakTransverseAH", &energyLeakTransverseAH, &b_energyLeakTransverseAH);
+   fChain->SetBranchAddress("energyLeakLongitudinal", &energyLeakLongitudinal, &b_energyLeakLongitudinal);
+   fChain->SetBranchAddress("energyLeakResidual", &energyLeakResidual, &b_energyLeakResidual);
+   fChain->SetBranchAddress("sim_energyAH", &sim_energyAH, &b_sim_energyAH);
+   /* fChain->SetBranchAddress("energyAbsorbedEE", &energyAbsorbedEE, &b_energyAbsorbedEE); */
+   /* fChain->SetBranchAddress("energyAbsorbedFH", &energyAbsorbedFH, &b_energyAbsorbedFH); */
    fChain->SetBranchAddress("NRechits", &NRechits, &b_NRechits);
    fChain->SetBranchAddress("rechit_detid", &rechit_detid, &b_rechit_detid);
    fChain->SetBranchAddress("rechit_module", &rechit_module, &b_rechit_module);
@@ -328,12 +483,21 @@ void HGCNtupleVariables::Init(TTree *tree, TTree *tree2)
    fChain->SetBranchAddress("rechit_TS3High", &rechit_TS3High, &b_rechit_TS3High);
    fChain->SetBranchAddress("rechit_TS3Low", &rechit_TS3Low, &b_rechit_TS3Low);
    fChain->SetBranchAddress("rechit_Tot", &rechit_Tot, &b_rechit_Tot);
-   fChain->SetBranchAddress("rechit_time", &rechit_time, &b_rechit_time);
+   /* fChain->SetBranchAddress("rechit_time", &rechit_time, &b_rechit_time); */
    fChain->SetBranchAddress("rechit_timeMaxHG", &rechit_timeMaxHG, &b_rechit_timeMaxHG);
    fChain->SetBranchAddress("rechit_timeMaxLG", &rechit_timeMaxLG, &b_rechit_timeMaxLG);
    fChain->SetBranchAddress("rechit_toaRise", &rechit_toaRise, &b_rechit_toaRise);
    fChain->SetBranchAddress("rechit_toaFall", &rechit_toaFall, &b_rechit_toaFall);
 
+
+   //AHCAL
+   fChain->SetBranchAddress("ahc_hitI", &ahc_hitI, &b_ahc_hitI);
+   fChain->SetBranchAddress("ahc_hitJ", &ahc_hitJ, &b_ahc_hitJ);
+   fChain->SetBranchAddress("ahc_hitK", &ahc_hitK, &b_ahc_hitK);
+   fChain->SetBranchAddress("ahc_nHits", &ahc_nHits, &b_ahc_nHits);
+   fChain->SetBranchAddress("ahc_hitEnergy", &ahc_hitEnergy, &b_ahc_hitEnergy);
+
+   
    // Set branch addresses and branch pointers
    if (!tree2) return;
    fChain2 = tree2;
@@ -397,6 +561,31 @@ void HGCNtupleVariables::Init(TTree *tree, TTree *tree2)
    fChain2->SetBranchAddress("impactY_HGCal_layer_27", &impactY_HGCal_layer_27, &b_impactY_HGCal_layer_27);
    fChain2->SetBranchAddress("impactX_HGCal_layer_28", &impactX_HGCal_layer_28, &b_impactX_HGCal_layer_28);
    fChain2->SetBranchAddress("impactY_HGCal_layer_28", &impactY_HGCal_layer_28, &b_impactY_HGCal_layer_28);
+   fChain2->SetBranchAddress("impactX_HGCal_layer_29", &impactX_HGCal_layer_29, &b_impactX_HGCal_layer_29);
+   fChain2->SetBranchAddress("impactY_HGCal_layer_29", &impactY_HGCal_layer_29, &b_impactY_HGCal_layer_29);
+   fChain2->SetBranchAddress("impactX_HGCal_layer_30", &impactX_HGCal_layer_30, &b_impactX_HGCal_layer_30);
+   fChain2->SetBranchAddress("impactY_HGCal_layer_30", &impactY_HGCal_layer_30, &b_impactY_HGCal_layer_30);
+   fChain2->SetBranchAddress("impactX_HGCal_layer_31", &impactX_HGCal_layer_31, &b_impactX_HGCal_layer_31);
+   fChain2->SetBranchAddress("impactY_HGCal_layer_31", &impactY_HGCal_layer_31, &b_impactY_HGCal_layer_31);
+   fChain2->SetBranchAddress("impactX_HGCal_layer_32", &impactX_HGCal_layer_32, &b_impactX_HGCal_layer_32);
+   fChain2->SetBranchAddress("impactY_HGCal_layer_32", &impactY_HGCal_layer_32, &b_impactY_HGCal_layer_32);
+   fChain2->SetBranchAddress("impactX_HGCal_layer_33", &impactX_HGCal_layer_33, &b_impactX_HGCal_layer_33);
+   fChain2->SetBranchAddress("impactY_HGCal_layer_33", &impactY_HGCal_layer_33, &b_impactY_HGCal_layer_33);
+   fChain2->SetBranchAddress("impactX_HGCal_layer_34", &impactX_HGCal_layer_34, &b_impactX_HGCal_layer_34);
+   fChain2->SetBranchAddress("impactY_HGCal_layer_34", &impactY_HGCal_layer_34, &b_impactY_HGCal_layer_34);
+   fChain2->SetBranchAddress("impactX_HGCal_layer_35", &impactX_HGCal_layer_35, &b_impactX_HGCal_layer_35);
+   fChain2->SetBranchAddress("impactY_HGCal_layer_35", &impactY_HGCal_layer_35, &b_impactY_HGCal_layer_35);
+   fChain2->SetBranchAddress("impactX_HGCal_layer_36", &impactX_HGCal_layer_36, &b_impactX_HGCal_layer_36);
+   fChain2->SetBranchAddress("impactY_HGCal_layer_36", &impactY_HGCal_layer_36, &b_impactY_HGCal_layer_36);
+   fChain2->SetBranchAddress("impactX_HGCal_layer_37", &impactX_HGCal_layer_37, &b_impactX_HGCal_layer_37);
+   fChain2->SetBranchAddress("impactY_HGCal_layer_37", &impactY_HGCal_layer_37, &b_impactY_HGCal_layer_37);
+   fChain2->SetBranchAddress("impactX_HGCal_layer_38", &impactX_HGCal_layer_38, &b_impactX_HGCal_layer_38);
+   fChain2->SetBranchAddress("impactY_HGCal_layer_38", &impactY_HGCal_layer_38, &b_impactY_HGCal_layer_38);
+   fChain2->SetBranchAddress("impactX_HGCal_layer_39", &impactX_HGCal_layer_39, &b_impactX_HGCal_layer_39);
+   fChain2->SetBranchAddress("impactY_HGCal_layer_39", &impactY_HGCal_layer_39, &b_impactY_HGCal_layer_39);
+   fChain2->SetBranchAddress("impactX_HGCal_layer_40", &impactX_HGCal_layer_40, &b_impactX_HGCal_layer_40);
+   fChain2->SetBranchAddress("impactY_HGCal_layer_40", &impactY_HGCal_layer_40, &b_impactY_HGCal_layer_40);
+
    fChain2->SetBranchAddress("trackChi2_X", &trackChi2_X, &b_trackChi2_X);
    fChain2->SetBranchAddress("trackChi2_Y", &trackChi2_Y, &b_trackChi2_Y);
    fChain2->SetBranchAddress("dwcReferenceType", &dwcReferenceType, &b_dwcReferenceType);

@@ -1,0 +1,1 @@
+/eos/cms/store/group/dpg_hgcal/tb_hgcal/2018/cern_h2_october/offline_analysis/sim_ntuples/CMSSW11_0_withAHCAL_newBeamline/QGSP_BERT/pions/ntuple_sim_config22_pdgID211_beamMomentum120_listQGSP_BERT.root

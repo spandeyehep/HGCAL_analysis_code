@@ -1,0 +1,1 @@
+/eos/cms/store/group/dpg_hgcal/tb_hgcal/2018/cern_h2_october/offline_analysis/sim_ntuples/CMSSW10_6_withAHCAL/muons/ntuple_sim_config22_pdgID13_beamMomentum200_listFTFP_BERT_EMN.root
