@@ -71,7 +71,7 @@ void AnalyzeHGCOctTB::EventLoop(const char *data) {
   cout << "nentries " << nentries << endl;
   cout << "Analyzing dataset " << data << " " << endl;
 
-  if(DoRunOn100k) {
+  if(DoRunOn100k && nentries > 100000.0) {
     float fraction_events = (float)(100000.0/nentries);
     fraction_events = fraction_events*100;
     nentries = 100000;
@@ -1071,6 +1071,7 @@ void AnalyzeHGCOctTB::EventLoop(const char *data) {
     else if(!UseShowerStartAlgo && UseCompartmentEnergy) {
       /////// BASED ON ENERGY SUM
       if((rechitEnergySum_EE < 100 && rechitEnergySum_FH < 60) || (AH_last3/rechitEnergySum_AH > 0.03 && rechitEnergySum_AH != 0)) {  //MIP LIKE
+      // if((rechitEnergySum_EE < 100 && rechitEnergySum_FH < 60)) {  //MIP LIKE
 	isRegion1 = true;
 	isRegion2 = false;
 	isRegion3 = false;
