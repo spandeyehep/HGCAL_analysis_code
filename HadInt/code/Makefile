@@ -4,11 +4,11 @@ CXXFLAGS= $(shell root-config --cflags)
 LIBS    = $(shell root-config --libs) 
 
 
-SOURCES = HGCNtupleVariables.cc AnalyzeHGCMuons.cc 
-HEADERS = HGCNtupleVariables.h AnalyzeHGCMuons.h 
+SOURCES = HGCNtupleVariables.cc AnalyzeHGCOctTB.cc 
+HEADERS = HGCNtupleVariables.h AnalyzeHGCOctTB.h 
 OBJECTS = $(SOURCES:.cc=.o)
 
-EXECUTABLE = analyzeHGCMuons
+EXECUTABLE = analyzeHGCOctTB
 
 all: $(SOURCES) $(EXECUTABLE)
 
@@ -34,4 +34,4 @@ clean:
 
 ###
 HGCNtupleVariables.o: HGCNtupleVariables.h
-AnalyzeHGCMuons.o:HGCNtupleVariables.h AnalyzeHGCMuons.h
+AnalyzeHGCOctTB.o:HGCNtupleVariables.h AnalyzeHGCOctTB.h
