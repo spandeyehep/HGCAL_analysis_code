@@ -1,0 +1,8 @@
+/home/work/spandey/public/HGCAL/CERN_TB/octTB/CMSSW_9_3_0/src/pions_data_sample/v16_v8/pion20/fulltree_679.root
+/home/work/spandey/public/HGCAL/CERN_TB/octTB/CMSSW_9_3_0/src/pions_data_sample/v16_v8/pion20/fulltree_680.root
+/home/work/spandey/public/HGCAL/CERN_TB/octTB/CMSSW_9_3_0/src/pions_data_sample/v16_v8/pion20/fulltree_682.root
+/home/work/spandey/public/HGCAL/CERN_TB/octTB/CMSSW_9_3_0/src/pions_data_sample/v16_v8/pion20/fulltree_683.root
+/home/work/spandey/public/HGCAL/CERN_TB/octTB/CMSSW_9_3_0/src/pions_data_sample/v16_v8/pion20/fulltree_685.root
+/home/work/spandey/public/HGCAL/CERN_TB/octTB/CMSSW_9_3_0/src/pions_data_sample/v16_v8/pion20/fulltree_687.root
+/home/work/spandey/public/HGCAL/CERN_TB/octTB/CMSSW_9_3_0/src/pions_data_sample/v16_v8/pion20/fulltree_688.root
+/home/work/spandey/public/HGCAL/CERN_TB/octTB/CMSSW_9_3_0/src/pions_data_sample/v16_v8/pion20/fulltree_689.root
