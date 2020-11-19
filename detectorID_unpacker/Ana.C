@@ -217,7 +217,7 @@ void Ana::Loop()
 	  hist_mip_Layer_zoomed[layer-1]->Fill(energy/GeVtoMIP_300um);
 	  hist_mip_Layer_logE[layer-1]->Fill(log10(energy/GeVtoMIP_300um));
 	  
-	  double smeared_en = (energy/GeVtoMIP_smeared_300um) + randgen->Gaus(0.0, 1.0/6);
+	  double smeared_en = (energy/GeVtoMIP_300um) + randgen->Gaus(0.0, 1.0/6);
 	  if(GeVtoMIP_300um == 85.5)
 	    smeared_en = smeared_en/1.04;
 	  
