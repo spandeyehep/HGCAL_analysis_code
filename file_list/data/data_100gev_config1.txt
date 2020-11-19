@@ -1,0 +1,1 @@
+/home/work/spandey/public/HGCAL/CERN_TB/octTB/CMSSW_9_3_0/src/pion_analysis/create_cobmined_tree_data/condor_jobs/condor_output/skimmed_ntuple_data_config22_pion100GeV_HGCv16_AHCv8.root
