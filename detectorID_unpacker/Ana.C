@@ -80,9 +80,15 @@ void Ana::Loop()
 
    TDirectory* dir;
 
-   double GeVtoMIP_300um = 85.5;
+   double GeVtoMIP_300um = 88.92;
+   // double GeVtoMIP_300um = 85.5;
+
    double GeVtoMIP_200um = 57.0;
 
+
+   
+   cout<<"IMPORTANT => GeVtoMIP_300um : GeVtoMIP_200um :: "<<GeVtoMIP_300um<<" : "<<GeVtoMIP_200um<<endl;
+   
    // double GeVtoMIP_smeared_300um = GeVtoMIP_300um*1.04;
    double GeVtoMIP_smeared_300um = GeVtoMIP_300um*1.0;
 
@@ -212,6 +218,9 @@ void Ana::Loop()
 	  hist_mip_Layer_logE[layer-1]->Fill(log10(energy/GeVtoMIP_300um));
 	  
 	  double smeared_en = (energy/GeVtoMIP_smeared_300um) + randgen->Gaus(0.0, 1.0/6);
+	  if(GeVtoMIP_300um == 85.5)
+	    smeared_en = smeared_en/1.04;
+	  
 	  hist_mip_Layer_smeared[layer-1]->Fill(smeared_en);
 	  hist_mip_Layer_zoomed_smeared[layer-1]->Fill(smeared_en);
 	  

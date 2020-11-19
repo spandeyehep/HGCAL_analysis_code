@@ -128,11 +128,10 @@ Ana::Ana(TTree *tree, int beamEnergy) : fChain(0)
   char* fname = new char[2000];
   char* dirname = new char[2000];
 
-  // sprintf(fname,"TBGenSim_pion%dGeV_FTFP_BERT_EMN_correctFH10_10k.root",energy);
-  // sprintf(dirname,"TBGenSim_pion%dGeV_FTFP_BERT_EMN_correctFH10_10k.root:/HGCalTBAnalyzer",energy);
-
-  sprintf(fname,"TBGenSim_%dGeV_muon_v2.root",energy);
-  sprintf(dirname,"TBGenSim_%dGeV_muon_v2.root:/HGCalTBAnalyzer",energy);
+  
+  //sprintf(fname,"GenSim_ROOT_files/TBGenSim_%dGeV_muon_v2.root",energy);
+  sprintf(fname,"GenSim_ROOT_files/TBGenSim_muon%dGeV_fullBL_v46.root",energy);
+  sprintf(dirname,"%s:/HGCalTBAnalyzer",fname);
 
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
