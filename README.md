@@ -24,7 +24,6 @@ Example: <br/>
 
 
 ### How to run the script for sim: <br/>
-`cd sim_analysis_code`<br/>
 `make`<br/>
 
 `./analyzeHGCOctTB <file_list> outFileName.root <physcis_list> <energy>`<br/>
