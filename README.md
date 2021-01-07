@@ -11,7 +11,7 @@ Takes skimmed trees as input.
 
 ### How to run the script for data: <br/>
 
-`cd data_analysis_code`<br/>
+`cd code_skeleton`<br/>
 `make`<br/>
 
 `./analyzeHGCOctTB <file_list> outFileName.root data <energy>`<br/>
