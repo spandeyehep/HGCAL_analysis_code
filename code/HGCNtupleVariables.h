@@ -11,6 +11,7 @@
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
+#include <TProfile.h>
 
 // Header file for the classes stored in the TTree if any.
 #include "vector"
@@ -22,15 +23,35 @@ public :
 
    HGCNtupleVariables(TTree * /*tree*/ =0) : fChain(0) { }
    ~HGCNtupleVariables() { }
-   //void    Init(TTree *tree);
-   void    Init(TTree *tree, TTree *tree2);
+   /* void    Init(TTree *tree); */
+   void    Init(TTree *tree, TTree *tree2, TTree *tree3);
    Bool_t  Notify();
    Int_t   GetEntry(Long64_t entry, Int_t getall = 0) { return fChain ? fChain->GetTree()->GetEntry(entry, getall) : 0; }
+  std::vector<int> getModuleLocation(int moduleID);
+  int getBIN(unsigned int skiroc,unsigned int channel);
+  float deltaR(float x1, float y1, float x2, float y2);
+  //double shower_comparisons(TProfile* shower, TH1F* hist);
+  //double shower_comparisons(TProfile* shower, TH1F* ref_h);
+  // TH1F* shower_comparisons(TProfile* shower, TH1F* hist);
+  // float find_my_calib(int layer, int en_chan);
+  // float find_official_calib(int layer, int en_chan);
+  std::vector<float> getLayerPosition(int layer_);
+  std::map<int, std::vector<float>> layer_positions;
 
+  std::map<int, std::vector<int>> module_map;
+  std::map<int, std::pair<float,float> > align_map;
+  std::pair<float,float> dxy_alignment(int layer);
+  std::map<std::pair<int,int>, float > noise_map;
+  float getNoise(std::pair<int,int> mod_chip);
+  // std::map<std::pair<int, int>, float> offical_calib_map;
+  // std::map<std::pair<int, int>, float> my_calib_map;
+  
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    TTree          *fChain2;   //!pointer to the analyzed TTree or TChain
+   TTree          *fChain3;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
    Int_t           fCurrent2; //!current Tree number in a TChain
+   Int_t           fCurrent3; //!current Tree number in a TChain
 
    // Fixed size dimensions of array or collections stored in the TTree if any.
 
@@ -66,7 +87,7 @@ public :
    vector<float>   *rechit_TS3High;
    vector<float>   *rechit_TS3Low;
    vector<unsigned short> *rechit_Tot;
-   vector<float>   *rechit_time;
+   //vector<float>   *rechit_time;
    vector<float>   *rechit_timeMaxHG;
    vector<float>   *rechit_timeMaxLG;
    vector<unsigned short> *rechit_toaRise;
@@ -104,7 +125,7 @@ public :
    TBranch        *b_rechit_TS3High;   //!
    TBranch        *b_rechit_TS3Low;   //!
    TBranch        *b_rechit_Tot;   //!
-   TBranch        *b_rechit_time;   //!
+   //TBranch        *b_rechit_time;   //!
    TBranch        *b_rechit_timeMaxHG;   //!
    TBranch        *b_rechit_timeMaxLG;   //!
    TBranch        *b_rechit_toaRise;   //!
@@ -168,6 +189,32 @@ public :
    Float_t         impactY_HGCal_layer_27;
    Float_t         impactX_HGCal_layer_28;
    Float_t         impactY_HGCal_layer_28;
+   Float_t         impactX_HGCal_layer_29;
+   Float_t         impactY_HGCal_layer_29;
+   Float_t         impactX_HGCal_layer_30;
+   Float_t         impactY_HGCal_layer_30;
+   Float_t         impactX_HGCal_layer_31;
+   Float_t         impactY_HGCal_layer_31;
+   Float_t         impactX_HGCal_layer_32;
+   Float_t         impactY_HGCal_layer_32;
+   Float_t         impactX_HGCal_layer_33;
+   Float_t         impactY_HGCal_layer_33;
+   Float_t         impactX_HGCal_layer_34;
+   Float_t         impactY_HGCal_layer_34;
+   Float_t         impactX_HGCal_layer_35;
+   Float_t         impactY_HGCal_layer_35;
+   Float_t         impactX_HGCal_layer_36;
+   Float_t         impactY_HGCal_layer_36;
+   Float_t         impactX_HGCal_layer_37;
+   Float_t         impactY_HGCal_layer_37;
+   Float_t         impactX_HGCal_layer_38;
+   Float_t         impactY_HGCal_layer_38;
+   Float_t         impactX_HGCal_layer_39;
+   Float_t         impactY_HGCal_layer_39;
+   Float_t         impactX_HGCal_layer_40;
+   Float_t         impactY_HGCal_layer_40;
+
+
    Float_t         trackChi2_X;
    Float_t         trackChi2_Y;
    Int_t           dwcReferenceType;
@@ -234,6 +281,31 @@ public :
    TBranch        *b_impactY_HGCal_layer_27;   //!
    TBranch        *b_impactX_HGCal_layer_28;   //!
    TBranch        *b_impactY_HGCal_layer_28;   //!
+   TBranch         *b_impactX_HGCal_layer_29;
+   TBranch         *b_impactY_HGCal_layer_29;
+   TBranch         *b_impactX_HGCal_layer_30;
+   TBranch         *b_impactY_HGCal_layer_30;
+   TBranch         *b_impactX_HGCal_layer_31;
+   TBranch         *b_impactY_HGCal_layer_31;
+   TBranch         *b_impactX_HGCal_layer_32;
+   TBranch         *b_impactY_HGCal_layer_32;
+   TBranch         *b_impactX_HGCal_layer_33;
+   TBranch         *b_impactY_HGCal_layer_33;
+   TBranch         *b_impactX_HGCal_layer_34;
+   TBranch         *b_impactY_HGCal_layer_34;
+   TBranch         *b_impactX_HGCal_layer_35;
+   TBranch         *b_impactY_HGCal_layer_35;
+   TBranch         *b_impactX_HGCal_layer_36;
+   TBranch         *b_impactY_HGCal_layer_36;
+   TBranch         *b_impactX_HGCal_layer_37;
+   TBranch         *b_impactY_HGCal_layer_37;
+   TBranch         *b_impactX_HGCal_layer_38;
+   TBranch         *b_impactY_HGCal_layer_38;
+   TBranch         *b_impactX_HGCal_layer_39;
+   TBranch         *b_impactY_HGCal_layer_39;
+   TBranch         *b_impactX_HGCal_layer_40;
+   TBranch         *b_impactY_HGCal_layer_40;
+
    TBranch        *b_trackChi2_X;   //!
    TBranch        *b_trackChi2_Y;   //!
    TBranch        *b_dwcReferenceType;   //!
@@ -244,13 +316,104 @@ public :
 
 
 
+
+   //AHCAL tree
+
+   Int_t           runNumber;
+   Int_t           eventNumber;
+   Long64_t        eventTime;
+   Int_t           ahc_iEvt;
+   Int_t           ahc_nHits;
+   Int_t           ahc_nLayers;
+   Float_t         ahc_energySum;
+   Float_t         ahc_energyDensity;
+   Float_t         ahc_radius;
+   Float_t         ahc_radiusEw;
+   Float_t         ahc_cogX;
+   Float_t         ahc_cogY;
+   Float_t         ahc_cogZ;
+   Float_t         ahc_frac25;
+   Float_t         ahc_energySum5Layer;
+   Int_t           ahc_nHits5Layer;
+   Float_t         ahc_cogX5Layer;
+   Float_t         ahc_cogY5Layer;
+   Float_t         ahc_cogZ5Layer;
+   vector<float>   *ahc_energyPerLayer;
+   vector<int>     *ahc_nHitsPerLayer;
+   vector<float>   *ahc_energyPerLayer_err;
+   vector<int>     *ahc_cellSize;
+   vector<float>   *ahc_cogXPerLayer;
+   vector<float>   *ahc_cogYPerLayer;
+   vector<float>   *ahc_radiusPerLayer;
+   vector<float>   *ahc_radiusEwPerLayer;
+   vector<int>     *ahc_hitCellID;
+   vector<int>     *ahc_hitI;
+   vector<int>     *ahc_hitJ;
+   vector<int>     *ahc_hitK;
+   vector<float>   *ahc_hitEnergy;
+   vector<float>   *ahc_hitTime;
+   vector<int>     *ahc_hitType;
+   vector<float>   *ahc_hitRadius;
+   vector<float>   *ahc_hitEnergyDensity;
+   vector<float>   *ahc_hitX;
+   vector<float>   *ahc_hitY;
+   vector<float>   *ahc_hitZ;
+   ULong64_t       lda_trigTime;
+   Int_t           event_BXID;
+
+ 
+   // List of branches
+   TBranch        *b_runNumber;   //!
+   TBranch        *b_eventNumber;   //!
+   TBranch        *b_eventTime;   //!
+   TBranch        *b_ahc_iEvt;   //!
+   TBranch        *b_ahc_nHits;   //!
+   TBranch        *b_ahc_nLayers;   //!
+   TBranch        *b_ahc_energySum;   //!
+   TBranch        *b_ahc_energyDensity;   //!
+   TBranch        *b_ahc_radius;   //!
+   TBranch        *b_ahc_radiusEw;   //!
+   TBranch        *b_ahc_cogX;   //!
+   TBranch        *b_ahc_cogY;   //!
+   TBranch        *b_ahc_cogZ;   //!
+   TBranch        *b_ahc_frac25;   //!
+   TBranch        *b_ahc_energySum5Layer;   //!
+   TBranch        *b_ahc_nHits5Layer;   //!
+   TBranch        *b_ahc_cogX5Layer;   //!
+   TBranch        *b_ahc_cogY5Layer;   //!
+   TBranch        *b_ahc_cogZ5Layer;   //!
+   TBranch        *b_ahc_energyPerLayer;   //!
+   TBranch        *b_ahc_nHitsPerLayer;   //!
+   TBranch        *b_ahc_energyPerLayer_err;   //!
+   TBranch        *b_ahc_cellSize;   //!
+   TBranch        *b_ahc_cogXPerLayer;   //!
+   TBranch        *b_ahc_cogYPerLayer;   //!
+   TBranch        *b_ahc_radiusPerLayer;   //!
+   TBranch        *b_ahc_radiusEwPerLayer;   //!
+   TBranch        *b_ahc_hitCellID;   //!
+   TBranch        *b_ahc_hitI;   //!
+   TBranch        *b_ahc_hitJ;   //!
+   TBranch        *b_ahc_hitK;   //!
+   TBranch        *b_ahc_hitEnergy;   //!
+   TBranch        *b_ahc_hitTime;   //!
+   TBranch        *b_ahc_hitType;   //!
+   TBranch        *b_ahc_hitRadius;   //!
+   TBranch        *b_ahc_hitEnergyDensity;   //!
+   TBranch        *b_ahc_hitX;   //!
+   TBranch        *b_ahc_hitY;   //!
+   TBranch        *b_ahc_hitZ;   //!
+   TBranch        *b_lda_trigTime;   //!
+   TBranch        *b_event_BXID;   //!
+
+
 };
 
 #endif
 
 #ifdef HGCNtupleVariables_cxx
 
-void HGCNtupleVariables::Init(TTree *tree, TTree *tree2)
+void HGCNtupleVariables::Init(TTree *tree, TTree *tree2, TTree *tree3)
+/* void HGCNtupleVariables::Init(TTree *tree) */
 {
    // The Init() function is called when the selector needs to initialize
    // a new tree or chain. Typically here the branch addresses and branch
@@ -286,7 +449,7 @@ void HGCNtupleVariables::Init(TTree *tree, TTree *tree2)
    rechit_TS3High = 0;
    rechit_TS3Low = 0;
    rechit_Tot = 0;
-   rechit_time = 0;
+   //rechit_time = 0;
    rechit_timeMaxHG = 0;
    rechit_timeMaxLG = 0;
    rechit_toaRise = 0;
@@ -328,7 +491,7 @@ void HGCNtupleVariables::Init(TTree *tree, TTree *tree2)
    fChain->SetBranchAddress("rechit_TS3High", &rechit_TS3High, &b_rechit_TS3High);
    fChain->SetBranchAddress("rechit_TS3Low", &rechit_TS3Low, &b_rechit_TS3Low);
    fChain->SetBranchAddress("rechit_Tot", &rechit_Tot, &b_rechit_Tot);
-   fChain->SetBranchAddress("rechit_time", &rechit_time, &b_rechit_time);
+   //fChain->SetBranchAddress("rechit_time", &rechit_time, &b_rechit_time);
    fChain->SetBranchAddress("rechit_timeMaxHG", &rechit_timeMaxHG, &b_rechit_timeMaxHG);
    fChain->SetBranchAddress("rechit_timeMaxLG", &rechit_timeMaxLG, &b_rechit_timeMaxLG);
    fChain->SetBranchAddress("rechit_toaRise", &rechit_toaRise, &b_rechit_toaRise);
@@ -397,6 +560,31 @@ void HGCNtupleVariables::Init(TTree *tree, TTree *tree2)
    fChain2->SetBranchAddress("impactY_HGCal_layer_27", &impactY_HGCal_layer_27, &b_impactY_HGCal_layer_27);
    fChain2->SetBranchAddress("impactX_HGCal_layer_28", &impactX_HGCal_layer_28, &b_impactX_HGCal_layer_28);
    fChain2->SetBranchAddress("impactY_HGCal_layer_28", &impactY_HGCal_layer_28, &b_impactY_HGCal_layer_28);
+   fChain2->SetBranchAddress("impactX_HGCal_layer_29", &impactX_HGCal_layer_29, &b_impactX_HGCal_layer_29);
+   fChain2->SetBranchAddress("impactY_HGCal_layer_29", &impactY_HGCal_layer_29, &b_impactY_HGCal_layer_29);
+   fChain2->SetBranchAddress("impactX_HGCal_layer_30", &impactX_HGCal_layer_30, &b_impactX_HGCal_layer_30);
+   fChain2->SetBranchAddress("impactY_HGCal_layer_30", &impactY_HGCal_layer_30, &b_impactY_HGCal_layer_30);
+   fChain2->SetBranchAddress("impactX_HGCal_layer_31", &impactX_HGCal_layer_31, &b_impactX_HGCal_layer_31);
+   fChain2->SetBranchAddress("impactY_HGCal_layer_31", &impactY_HGCal_layer_31, &b_impactY_HGCal_layer_31);
+   fChain2->SetBranchAddress("impactX_HGCal_layer_32", &impactX_HGCal_layer_32, &b_impactX_HGCal_layer_32);
+   fChain2->SetBranchAddress("impactY_HGCal_layer_32", &impactY_HGCal_layer_32, &b_impactY_HGCal_layer_32);
+   fChain2->SetBranchAddress("impactX_HGCal_layer_33", &impactX_HGCal_layer_33, &b_impactX_HGCal_layer_33);
+   fChain2->SetBranchAddress("impactY_HGCal_layer_33", &impactY_HGCal_layer_33, &b_impactY_HGCal_layer_33);
+   fChain2->SetBranchAddress("impactX_HGCal_layer_34", &impactX_HGCal_layer_34, &b_impactX_HGCal_layer_34);
+   fChain2->SetBranchAddress("impactY_HGCal_layer_34", &impactY_HGCal_layer_34, &b_impactY_HGCal_layer_34);
+   fChain2->SetBranchAddress("impactX_HGCal_layer_35", &impactX_HGCal_layer_35, &b_impactX_HGCal_layer_35);
+   fChain2->SetBranchAddress("impactY_HGCal_layer_35", &impactY_HGCal_layer_35, &b_impactY_HGCal_layer_35);
+   fChain2->SetBranchAddress("impactX_HGCal_layer_36", &impactX_HGCal_layer_36, &b_impactX_HGCal_layer_36);
+   fChain2->SetBranchAddress("impactY_HGCal_layer_36", &impactY_HGCal_layer_36, &b_impactY_HGCal_layer_36);
+   fChain2->SetBranchAddress("impactX_HGCal_layer_37", &impactX_HGCal_layer_37, &b_impactX_HGCal_layer_37);
+   fChain2->SetBranchAddress("impactY_HGCal_layer_37", &impactY_HGCal_layer_37, &b_impactY_HGCal_layer_37);
+   fChain2->SetBranchAddress("impactX_HGCal_layer_38", &impactX_HGCal_layer_38, &b_impactX_HGCal_layer_38);
+   fChain2->SetBranchAddress("impactY_HGCal_layer_38", &impactY_HGCal_layer_38, &b_impactY_HGCal_layer_38);
+   fChain2->SetBranchAddress("impactX_HGCal_layer_39", &impactX_HGCal_layer_39, &b_impactX_HGCal_layer_39);
+   fChain2->SetBranchAddress("impactY_HGCal_layer_39", &impactY_HGCal_layer_39, &b_impactY_HGCal_layer_39);
+   fChain2->SetBranchAddress("impactX_HGCal_layer_40", &impactX_HGCal_layer_40, &b_impactX_HGCal_layer_40);
+   fChain2->SetBranchAddress("impactY_HGCal_layer_40", &impactY_HGCal_layer_40, &b_impactY_HGCal_layer_40);
+
    fChain2->SetBranchAddress("trackChi2_X", &trackChi2_X, &b_trackChi2_X);
    fChain2->SetBranchAddress("trackChi2_Y", &trackChi2_Y, &b_trackChi2_Y);
    fChain2->SetBranchAddress("dwcReferenceType", &dwcReferenceType, &b_dwcReferenceType);
@@ -404,6 +592,81 @@ void HGCNtupleVariables::Init(TTree *tree, TTree *tree2)
    fChain2->SetBranchAddress("m_y", &m_y, &b_m_y);
    fChain2->SetBranchAddress("b_x", &b_x, &b_b_x);
    fChain2->SetBranchAddress("b_y", &b_y, &b_b_y);
+
+
+
+   // Set object pointer
+   ahc_energyPerLayer = 0;
+   ahc_nHitsPerLayer = 0;
+   ahc_energyPerLayer_err = 0;
+   ahc_cellSize = 0;
+   ahc_cogXPerLayer = 0;
+   ahc_cogYPerLayer = 0;
+   ahc_radiusPerLayer = 0;
+   ahc_radiusEwPerLayer = 0;
+   ahc_hitCellID = 0;
+   ahc_hitI = 0;
+   ahc_hitJ = 0;
+   ahc_hitK = 0;
+   ahc_hitEnergy = 0;
+   ahc_hitTime = 0;
+   ahc_hitType = 0;
+   ahc_hitRadius = 0;
+   ahc_hitEnergyDensity = 0;
+   ahc_hitX = 0;
+   ahc_hitY = 0;
+   ahc_hitZ = 0;
+   // Set branch addresses and branch pointers
+   if (!tree3) return;
+   fChain3 = tree3;
+   fCurrent3 = -1;
+   fChain3->SetMakeClass(1);
+
+   fChain3->SetBranchAddress("runNumber", &runNumber, &b_runNumber);
+   fChain3->SetBranchAddress("eventNumber", &eventNumber, &b_eventNumber);
+   fChain3->SetBranchAddress("eventTime", &eventTime, &b_eventTime);
+   fChain3->SetBranchAddress("ahc_iEvt", &ahc_iEvt, &b_ahc_iEvt);
+   fChain3->SetBranchAddress("ahc_nHits", &ahc_nHits, &b_ahc_nHits);
+   fChain3->SetBranchAddress("ahc_nLayers", &ahc_nLayers, &b_ahc_nLayers);
+   fChain3->SetBranchAddress("ahc_energySum", &ahc_energySum, &b_ahc_energySum);
+   fChain3->SetBranchAddress("ahc_energyDensity", &ahc_energyDensity, &b_ahc_energyDensity);
+   fChain3->SetBranchAddress("ahc_radius", &ahc_radius, &b_ahc_radius);
+   fChain3->SetBranchAddress("ahc_radiusEw", &ahc_radiusEw, &b_ahc_radiusEw);
+   fChain3->SetBranchAddress("ahc_cogX", &ahc_cogX, &b_ahc_cogX);
+   fChain3->SetBranchAddress("ahc_cogY", &ahc_cogY, &b_ahc_cogY);
+   fChain3->SetBranchAddress("ahc_cogZ", &ahc_cogZ, &b_ahc_cogZ);
+   fChain3->SetBranchAddress("ahc_frac25", &ahc_frac25, &b_ahc_frac25);
+   fChain3->SetBranchAddress("ahc_energySum5Layer", &ahc_energySum5Layer, &b_ahc_energySum5Layer);
+   fChain3->SetBranchAddress("ahc_nHits5Layer", &ahc_nHits5Layer, &b_ahc_nHits5Layer);
+   fChain3->SetBranchAddress("ahc_cogX5Layer", &ahc_cogX5Layer, &b_ahc_cogX5Layer);
+   fChain3->SetBranchAddress("ahc_cogY5Layer", &ahc_cogY5Layer, &b_ahc_cogY5Layer);
+   fChain3->SetBranchAddress("ahc_cogZ5Layer", &ahc_cogZ5Layer, &b_ahc_cogZ5Layer);
+   fChain3->SetBranchAddress("ahc_energyPerLayer", &ahc_energyPerLayer, &b_ahc_energyPerLayer);
+   fChain3->SetBranchAddress("ahc_nHitsPerLayer", &ahc_nHitsPerLayer, &b_ahc_nHitsPerLayer);
+   fChain3->SetBranchAddress("ahc_energyPerLayer_err", &ahc_energyPerLayer_err, &b_ahc_energyPerLayer_err);
+   fChain3->SetBranchAddress("ahc_cellSize", &ahc_cellSize, &b_ahc_cellSize);
+   fChain3->SetBranchAddress("ahc_cogXPerLayer", &ahc_cogXPerLayer, &b_ahc_cogXPerLayer);
+   fChain3->SetBranchAddress("ahc_cogYPerLayer", &ahc_cogYPerLayer, &b_ahc_cogYPerLayer);
+   fChain3->SetBranchAddress("ahc_radiusPerLayer", &ahc_radiusPerLayer, &b_ahc_radiusPerLayer);
+   fChain3->SetBranchAddress("ahc_radiusEwPerLayer", &ahc_radiusEwPerLayer, &b_ahc_radiusEwPerLayer);
+   fChain3->SetBranchAddress("ahc_hitCellID", &ahc_hitCellID, &b_ahc_hitCellID);
+   fChain3->SetBranchAddress("ahc_hitI", &ahc_hitI, &b_ahc_hitI);
+   fChain3->SetBranchAddress("ahc_hitJ", &ahc_hitJ, &b_ahc_hitJ);
+   fChain3->SetBranchAddress("ahc_hitK", &ahc_hitK, &b_ahc_hitK);
+   fChain3->SetBranchAddress("ahc_hitEnergy", &ahc_hitEnergy, &b_ahc_hitEnergy);
+   fChain3->SetBranchAddress("ahc_hitTime", &ahc_hitTime, &b_ahc_hitTime);
+   fChain3->SetBranchAddress("ahc_hitType", &ahc_hitType, &b_ahc_hitType);
+   fChain3->SetBranchAddress("ahc_hitRadius", &ahc_hitRadius, &b_ahc_hitRadius);
+   fChain3->SetBranchAddress("ahc_hitEnergyDensity", &ahc_hitEnergyDensity, &b_ahc_hitEnergyDensity);
+   fChain3->SetBranchAddress("ahc_hitX", &ahc_hitX, &b_ahc_hitX);
+   fChain3->SetBranchAddress("ahc_hitY", &ahc_hitY, &b_ahc_hitY);
+   fChain3->SetBranchAddress("ahc_hitZ", &ahc_hitZ, &b_ahc_hitZ);
+   fChain3->SetBranchAddress("lda_trigTime", &lda_trigTime, &b_lda_trigTime);
+   fChain3->SetBranchAddress("event_BXID", &event_BXID, &b_event_BXID);
+
+
+
+
 
    Notify();
 }

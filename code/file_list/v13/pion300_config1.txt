@@ -1,0 +1,12 @@
+/afs/cern.ch/user/b/bkansal/work/forShubham/HGCAL_AHCAL_ntuples_OctTB/pion300_v3_v13/fulltree_512.root
+/afs/cern.ch/user/b/bkansal/work/forShubham/HGCAL_AHCAL_ntuples_OctTB/pion300_v3_v13/fulltree_513.root
+/afs/cern.ch/user/b/bkansal/work/forShubham/HGCAL_AHCAL_ntuples_OctTB/pion300_v3_v13/fulltree_514.root
+/afs/cern.ch/user/b/bkansal/work/forShubham/HGCAL_AHCAL_ntuples_OctTB/pion300_v3_v13/fulltree_515.root
+/afs/cern.ch/user/b/bkansal/work/forShubham/HGCAL_AHCAL_ntuples_OctTB/pion300_v3_v13/fulltree_516.root
+/afs/cern.ch/user/b/bkansal/work/forShubham/HGCAL_AHCAL_ntuples_OctTB/pion300_v3_v13/fulltree_517.root
+/afs/cern.ch/user/b/bkansal/work/forShubham/HGCAL_AHCAL_ntuples_OctTB/pion300_v3_v13/fulltree_518.root
+/afs/cern.ch/user/b/bkansal/work/forShubham/HGCAL_AHCAL_ntuples_OctTB/pion300_v3_v13/fulltree_519.root
+/afs/cern.ch/user/b/bkansal/work/forShubham/HGCAL_AHCAL_ntuples_OctTB/pion300_v3_v13/fulltree_520.root
+/afs/cern.ch/user/b/bkansal/work/forShubham/HGCAL_AHCAL_ntuples_OctTB/pion300_v3_v13/fulltree_521.root
+/afs/cern.ch/user/b/bkansal/work/forShubham/HGCAL_AHCAL_ntuples_OctTB/pion300_v3_v13/fulltree_522.root
+/afs/cern.ch/user/b/bkansal/work/forShubham/HGCAL_AHCAL_ntuples_OctTB/pion300_v3_v13/fulltree_523.root
