@@ -3,26 +3,24 @@ CXX     = g++
 CXXFLAGS= $(shell root-config --cflags)
 LIBS    = $(shell root-config --libs) 
 
+SOURCES = Ana.C
+HEADERS = Ana.h checkCell.h
 
-SOURCES = HGCNtupleVariables.cc AnalyzeHGCMuons.cc 
-HEADERS = HGCNtupleVariables.h AnalyzeHGCMuons.h 
-OBJECTS = $(SOURCES:.cc=.o)
+OBJECTS = $(SOURCES:.C=.o)
 
-EXECUTABLE = analyzeHGCMuons
+EXECUTABLE = ana
 
 all: $(SOURCES) $(EXECUTABLE)
 
 %.o: %.cc
 	@echo Compiling $<...
-	$(CXX) $(CXXFLAGS) -c -o $@ $< 
-
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 $(EXECUTABLE): $(OBJECTS)
 	@echo "Linking $(PROGRAM) ..."
 	@echo "@$(CXX) $(LIBS) $(OBJECTS) -o $@"
 	@$(CXX) -o $@ $^ $(LIBS)
 	@echo "done"
-
 
 # Specifying the object files as intermediates deletes them automatically after the build process.
 .INTERMEDIATE:  $(OBJECTS)
@@ -32,6 +30,5 @@ $(EXECUTABLE): $(OBJECTS)
 clean:
 	rm -f $(OBJECTS) $(EXECUTABLE)
 
-###
-HGCNtupleVariables.o: HGCNtupleVariables.h
-AnalyzeHGCMuons.o:HGCNtupleVariables.h AnalyzeHGCMuons.h
+checkCell.o: checkCell.h
+Ana.o: Ana.h
