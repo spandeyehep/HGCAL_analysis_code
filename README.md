@@ -13,28 +13,28 @@ Since ntuple structure is different for data and sim therefore we have two folde
 `cd data`<br/>
 `make`<br/>
 
-`./analyzeHGCOctTB <file_list> outFileName.root data <configuration> <energy> <event_categorization_switch> 3`<br/>
+`./analyzeHGCOctTB <file_list> outFileName.root data <configuration> <energy> 3`<br/>
 
 
 `<file_list.txt>` : contains files to be analyzed (can be found in file_list folder)<br/>
 `<configuration>` : alpha (always use alpha for config-1)<br/>
 `<energy>` : beam_energy<br/>
-`<event_categorization_switch>` : Use 1 for shower_start_finder_based method, 0 for energy_cut_based method (always use 1)<br/>
+
 
 Example: <br/>
-`./analyzeHGCOctTB file_list/v16_v8/pion100_config1.txt outFileName.root data alpha 100 1 3
+`./analyzeHGCOctTB file_list/v16_v8/pion100_config1.txt outFileName.root data alpha 100 3
 
 
 ### How to run the script for sim: <br/>
 `cd sim`<br/>
 `make`<br/>
 
-`./analyzeHGCOctTB <file_list> outFileName.root <physcis_list> <configuration> <energy> <event_categorization_switch> 3`<br/>
+`./analyzeHGCOctTB <file_list> outFileName.root <physcis_list> <configuration> <energy> 3`<br/>
 
 Everthing is same expect for `<physcis_list>` <br/>
 `<physcis_list>` : Use `FTFP_BERT_EMN` or `QGSP_FTFP_BERT_EMN` <br/>
 Example: <br/>
-`./analyzeHGCOctTB file_list/CMSSW11_0_withAHCAL_newBeamline/v44_VtxBeam_v3_correctFH10/FTFP_BERT_EMN/sim_pion_100.txt outFileName.root FTFP_BERT_EMN alpha 100 1 3`
+`./analyzeHGCOctTB file_list/CMSSW11_0_withAHCAL_newBeamline/v44_VtxBeam_v3_correctFH10/FTFP_BERT_EMN/sim_pion_100.txt outFileName.root FTFP_BERT_EMN alpha 100 3`
 
 
 ### Descrition of scripts: <br/>
