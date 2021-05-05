@@ -1,0 +1,11 @@
+/home/work/kalpana/public/work/HgcalTestBeam_OCT18/CMSSW_9_3_0/src/CERN_TB/octTB/data_samples/data_samples/Config1/electron_datasamples/v16_v8/electron100/fulltree_477.root
+/home/work/kalpana/public/work/HgcalTestBeam_OCT18/CMSSW_9_3_0/src/CERN_TB/octTB/data_samples/data_samples/Config1/electron_datasamples/v16_v8/electron100/fulltree_479.root
+/home/work/kalpana/public/work/HgcalTestBeam_OCT18/CMSSW_9_3_0/src/CERN_TB/octTB/data_samples/data_samples/Config1/electron_datasamples/v16_v8/electron100/fulltree_480.root
+/home/work/kalpana/public/work/HgcalTestBeam_OCT18/CMSSW_9_3_0/src/CERN_TB/octTB/data_samples/data_samples/Config1/electron_datasamples/v16_v8/electron100/fulltree_481.root
+/home/work/kalpana/public/work/HgcalTestBeam_OCT18/CMSSW_9_3_0/src/CERN_TB/octTB/data_samples/data_samples/Config1/electron_datasamples/v16_v8/electron100/fulltree_482.root
+/home/work/kalpana/public/work/HgcalTestBeam_OCT18/CMSSW_9_3_0/src/CERN_TB/octTB/data_samples/data_samples/Config1/electron_datasamples/v16_v8/electron100/fulltree_483.root
+/home/work/kalpana/public/work/HgcalTestBeam_OCT18/CMSSW_9_3_0/src/CERN_TB/octTB/data_samples/data_samples/Config1/electron_datasamples/v16_v8/electron100/fulltree_484.root
+/home/work/kalpana/public/work/HgcalTestBeam_OCT18/CMSSW_9_3_0/src/CERN_TB/octTB/data_samples/data_samples/Config1/electron_datasamples/v16_v8/electron100/fulltree_486.root
+/home/work/kalpana/public/work/HgcalTestBeam_OCT18/CMSSW_9_3_0/src/CERN_TB/octTB/data_samples/data_samples/Config1/electron_datasamples/v16_v8/electron100/fulltree_487.root
+/home/work/kalpana/public/work/HgcalTestBeam_OCT18/CMSSW_9_3_0/src/CERN_TB/octTB/data_samples/data_samples/Config1/electron_datasamples/v16_v8/electron100/fulltree_489.root
+/home/work/kalpana/public/work/HgcalTestBeam_OCT18/CMSSW_9_3_0/src/CERN_TB/octTB/data_samples/data_samples/Config1/electron_datasamples/v16_v8/electron100/fulltree_490.root
