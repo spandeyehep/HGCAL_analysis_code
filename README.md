@@ -2,7 +2,9 @@
 
 ## Noise fitting and value extraction <br/>
 
-CMSSW version: CMSSW_9_3_0_pre3 (do `cmsenv`).
+CMSSW version: CMSSW_9_3_0_pre3 (do `cmsenv`).<br/>
+Input files are avaiable on IISER cluster: `/home/work/spandey/public/HGCAL/CERN_TB/octTB/CMSSW_9_3_0/src/MIP_analysis/SNR/muon_rereco_v12_719` <br/>
+
 
 ### Downlaod scripts <br/>
 `git clone -b  SNR_study git@github.com:spandeyehep/HGCAL_analysis_code.git .` <br/>
