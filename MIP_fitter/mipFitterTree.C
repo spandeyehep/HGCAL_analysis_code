@@ -129,8 +129,11 @@ void Loop(unsigned int layer,unsigned int skiroc,unsigned int channel)
    RooRealVar sl0("SigmaL","Landau sigma",5,0.,30) ;
    RooLandau landau1("l1","Single MIP distribution",x,ml0,sl0) ;
   
+  // If X~Landau(µ1, c1) and Y~Landau(µ2, c2), then X+Y~Landau(µ1+µ2, c1+c2)
+  // https://en.wikipedia.org/wiki/Landau_distribution#Properties
    RooFormulaVar ml1("MPV1","Laudau MPV for 2-MIP peak","2*@0",ml0) ;
-   RooLandau landau2("l2","Two-MIP distribution",x,ml1,sl0) ;
+   RooFormulaVar sl1("SigmaL1","Laudau sigma for 2-MIP peak","2*@0",sl0) ;
+   RooLandau landau2("l2","Two-MIP distribution",x,ml1,sl1) ;
 
    RooFFTConvPdf l1xg("l1xg","landau1 (X) gauss",x,landau1,mipG0) ;
    RooFFTConvPdf l2xg("l2xg","landau2 (X) gauss",x,landau2,mipG0) ;
